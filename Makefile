@@ -1,13 +1,15 @@
 NAME = avm
 
 SRC_FILES = \
-			src/main.cpp
+			src/main.cpp     \
+			src/Factory.cpp  \
 
 OBJ_FILES = \
-			obj/main.o
+			obj/main.o      \
+			obj/Factory.o   \
 
 CC = g++
-C_FLAGS = -Wall -Werror -Wextra
+C_FLAGS = -Wall -Werror -Wextra -fsanitize=address
 
 all: $(NAME)
 
@@ -16,7 +18,7 @@ obj/%.o : src/%.cpp
 	$(CC) $(C_FLAGS) -Iincludes/ -c $< -o $@
 
 $(NAME) : $(OBJ_FILES)
-	$(CC) $(C_FLAGS) -Iincludes $< -o $(NAME)
+	$(CC) $(C_FLAGS) -Iincludes/ $< -o $(NAME)
 
 t : $(NAME)
 	./$(NAME) tests/example.txt

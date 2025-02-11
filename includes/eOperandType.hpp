@@ -4,6 +4,6 @@ enum class eOperandType {
     int8,
     int16,
     int32,
-    Flaot,
+    Float,
     Double
 };

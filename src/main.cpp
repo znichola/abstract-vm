@@ -3,7 +3,7 @@
 
 #include "IOperands.hpp"
 
-void readData(std::istream & in) {
+void readData(std::istream& in) {
     while (!in.eof()) {
         std::string line;
         std::getline(in, line);
@@ -20,6 +20,7 @@ int main(int ac, char **av) {
         std::ifstream file(av[1]);
         if (file.is_open()) {
             readData(file);
+           // file.close();
         } else {
             std::cout << "faile to open file" << std::endl;
         } 
