@@ -6,7 +6,7 @@ SRC_FILES = \
 OBJ_FILES = \
 			obj/main.o
 
-CC = clang
+CC = g++
 C_FLAGS = -Wall -Werror -Wextra
 
 all: $(NAME)
@@ -18,6 +18,12 @@ obj/%.o : src/%.cpp
 $(NAME) : $(OBJ_FILES)
 	$(CC) $(C_FLAGS) -Iincludes $< -o $(NAME)
 
+t : $(NAME)
+	./$(NAME) tests/example.txt
+
+i : $(NAME)
+	./$(NAME)
+
 clean :
 	-rm -r obj
 
@@ -26,5 +32,5 @@ fclean : clean
 
 re : fclean $(NAME)
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re t i
 
