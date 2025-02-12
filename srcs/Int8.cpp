@@ -32,6 +32,16 @@ std::string const & Int8::toString(void) const {
     return value;
 }
 
+int8_t Int8::toValue(const std::string &s) const {
+    int8_t v = 0;
+    std::stringstream ss(s);
+    ss >> v;
+
+    if (ss.fail()) {}// TODO : add error handelling for parsing error
+
+    return v;
+}
+
 // Operators
 
 IOperand const * Int8::operator+( IOperand const &rhs ) const {
@@ -40,7 +50,7 @@ IOperand const * Int8::operator+( IOperand const &rhs ) const {
 
     }
 
-    eOperandType pres = getPrecision() >= rhs.getPrecision() ? getType() : rhs.getType();
+    // eOperandType pres = getPrecision() >= rhs.getPrecision() ? getType() : rhs.getType();
 
 
 

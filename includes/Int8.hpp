@@ -26,6 +26,8 @@ public:
     int getPrecision(void) const;
     std::string const & toString(void) const;
 
+    int8_t toValue(const std::string &s) const;
+
 // Operators
     IOperand const * operator+(IOperand const & rhs) const;
 };
