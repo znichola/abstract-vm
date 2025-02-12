@@ -14,7 +14,7 @@ void readData(std::istream& in) {
 int main(int ac, char **av) {
     (void)av;
 
-    Int8 foo = Int8(12);
+    Int8 foo = Int8("12");
     
     std::cout << foo.toString() << std::endl;
 

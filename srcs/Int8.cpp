@@ -3,7 +3,7 @@
 // Default constructor
 Int8::Int8() : value("") {}
 
-Int8::Int8(int8_t v) : value(std::to_string(v)) {}
+Int8::Int8(std::string v) : value(v) {}
 
 // Copy constructor
 Int8::Int8(const Int8 &other) {
@@ -33,8 +33,28 @@ std::string const & Int8::toString(void) const {
 }
 
 // Operators
-/*
+
 IOperand const * Int8::operator+( IOperand const &rhs ) const {
-    return new Int8(value + rhs.value);
+    if (getPrecision() == rhs.getPrecision()) {
+        // TODO : convert the commong value, helper function needed!
+
+    }
+
+    eOperandType pres = getPrecision() >= rhs.getPrecision() ? getType() : rhs.getType();
+
+
+
+    // in board strokes what needs to happen here is:
+    // we get the two values a + b
+    // aka this + rhs
+    // then we need to figure out who has persision
+    // convert everything to this
+    // do the op
+    // return the result
+
+    // this means I need a function to convert any 
+    // value to any other, no matter the string format
+
+    return new Int8(value);
 }
-*/
+

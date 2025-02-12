@@ -10,7 +10,7 @@ public:
 // Default constructor
 	Int8();
 
-    Int8(int8_t v);
+    Int8(std::string v);
 
 // Copy constructor
 	Int8(const Int8 &other);
@@ -27,7 +27,7 @@ public:
     std::string const & toString(void) const;
 
 // Operators
-//    IOperand const * operator+(IOperand const & rhs) const;
+    IOperand const * operator+(IOperand const & rhs) const;
 };
 
 
