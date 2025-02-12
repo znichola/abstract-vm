@@ -20,7 +20,7 @@ Factory::~Factory() {
 // Copy assignment operator
 Factory &Factory::operator=(const Factory &other) {
 	(void)other;
-	// TODO: insert return statement here
+	// nothing to copy,  TODO: check this is true
 	return *this;
 }
 
@@ -45,3 +45,4 @@ std::unique_ptr<IOperand> Factory::create(eOperandType t) {
     }
     return nullptr;
 }
+

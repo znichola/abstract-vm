@@ -1,25 +1,16 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   Int8.hpp                                           :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: znichola <znichola@student.42lausanne.ch>  +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/02/12 12:07:49 by znichola          #+#    #+#             */
-/*   Updated: 2025/02/12 12:07:49 by znichola         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #ifndef INT8_HPP
 # define INT8_HPP
 
-class Int8
-{
-private:
+#include "IOperand.hpp"
 
+class Int8: public IOperand {
+private:
+    std::string value;
 public:
 // Default constructor
 	Int8();
+
+    Int8(int8_t v);
 
 // Copy constructor
 	Int8(const Int8 &other);
@@ -29,6 +20,15 @@ public:
 
 // Copy assignment operator
 	Int8 & operator=(const Int8 &other);
+
+// Methods
+    eOperandType getType(void) const;
+    int getPrecision(void) const;
+    std::string const & toString(void) const;
+
+// Operators
+//    IOperand const * operator+(IOperand const & rhs) const;
 };
+
 
 #endif /* INT8_HPP */

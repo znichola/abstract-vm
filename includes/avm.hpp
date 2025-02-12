@@ -10,10 +10,8 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef INT8_HPP
-# define INT8_HPP
-
-# include <iostream>
+#ifndef AVM_HPP
+# define AVM_HPP
 
 # include "Int8.hpp"
 # include "Int16.hpp"
@@ -24,4 +22,4 @@
 # include "IOperand.hpp"
 # include "eOperandType.hpp"
 
-#endif /* INT8_HPP */
+#endif /* AVM_HPP */
