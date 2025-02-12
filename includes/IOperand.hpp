@@ -1,10 +1,13 @@
-#pragma once
+#ifndef IOPERAND_HPP
+# define IOPERAND_HPP
 
 #include <string>
 
 #include "eOperandType.hpp"
 
-class IOperand {
+class IOperand
+{
+private:
 
 public:
     virtual int          getPrecision( void ) const = 0; // Precision of the type of the instance
@@ -21,3 +24,4 @@ public:
     virtual ~IOperand( void ) {}
 };
 
+#endif /* IOPERAND_HPP */

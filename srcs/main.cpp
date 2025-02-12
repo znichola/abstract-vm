@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "IOperands.hpp"
+#include "avm.hpp"
 
 void readData(std::istream& in) {
     while (!in.eof()) {
@@ -20,7 +20,7 @@ int main(int ac, char **av) {
         std::ifstream file(av[1]);
         if (file.is_open()) {
             readData(file);
-           // file.close();
+            file.close();
         } else {
             std::cout << "faile to open file" << std::endl;
         } 
@@ -28,4 +28,3 @@ int main(int ac, char **av) {
     std::cout << "bye!" << std::endl;
     return 0;
 }
-

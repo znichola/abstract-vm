@@ -1,13 +1,28 @@
-#pragma once
+#ifndef FACTORY_HPP
+# define FACTORY_HPP
 
 #include <memory>
 
-#include "IOperands.hpp"
+#include "IOperand.hpp"
 #include "eOperandType.hpp"
 
 class Factory {
-public:
-    virtual std::unique_ptr<IOperand> create(eOperandType t);
+private:
 
+public:
+// Default constructor
+	Factory();
+
+// Copy constructor
+	Factory(const Factory &other);
+
+// Destructor
+	~Factory();
+
+// Copy assignment operator
+	Factory & operator=(const Factory &other);
+
+    virtual std::unique_ptr<IOperand> create(eOperandType t);
 };
 
+#endif /* FACTORY_HPP */

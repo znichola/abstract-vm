@@ -1,38 +1,54 @@
-NAME = avm
+NAME	= avm
 
-SRC_FILES = \
-			src/main.cpp     \
-			src/Factory.cpp  \
+CC		= c++
+CFLAGS	= -Wall -Wextra
+CFLAGS	+= -Werror
+#CFLAGS	+= -std=c++98 -pedantic
 
-OBJ_FILES = \
-			obj/main.o      \
-			obj/Factory.o   \
+ifdef DEBUG
+CFLAGS	+= -g3 -fsanitize=address
+else
+ifdef DEBUGL
+CFLAGS += -g3
+endif
+endif
 
-CC = g++
-C_FLAGS = -Wall -Werror -Wextra -fsanitize=address
+LEAKS_CHECK = valgrind
 
-all: $(NAME)
+FILES	= main Int8 Int16 Int32 Float Double Factory
 
-obj/%.o : src/%.cpp
-	@mkdir -p obj
-	$(CC) $(C_FLAGS) -Iincludes/ -c $< -o $@
+OBJS_PATH = objs/
+SRCS_PATH = srcs/
+INCS_PATH = -Iincludes/.
 
-$(NAME) : $(OBJ_FILES)
-	$(CC) $(C_FLAGS) -Iincludes/ $< -o $(NAME)
+SRCS	= $(addprefix $(SRCS_PATH), $(addsuffix .cpp, $(FILES)))
+OBJS	= $(addprefix $(OBJS_PATH), $(addsuffix .o, $(FILES)))
 
-t : $(NAME)
-	./$(NAME) tests/example.txt
+all	: $(NAME)
 
-i : $(NAME)
-	./$(NAME)
+$(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp
+	@mkdir -p $(@D)
+	$(CC) $(CFLAGS) -c $(INCS_PATH) -o $@ $<
 
-clean :
-	-rm -r obj
+$(NAME)	: $(OBJS)
+	$(CC) $(CFLAGS) $(OBJS) -o $@
 
-fclean : clean
+clean	:
+	-rm $(OBJS)
+
+fclean	: clean
 	-rm $(NAME)
 
-re : fclean $(NAME)
+re	: fclean all
 
-.PHONY: all clean fclean re t i
+run : all
+	./$(NAME)
+
+t	: all
+	./$(NAME) tests/example.txt
+
+leaks : re
+	$(LEAKS_CHECK) ./$(NAME)
+
+.PHONY: all clean fclean re run t leaks
 

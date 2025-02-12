@@ -1,4 +1,5 @@
-#pragma once
+#ifndef EOPERANDTYPE_HPP
+# define EOPERANDTYPE_HPP
 
 enum class eOperandType {
     int8,
@@ -7,3 +8,5 @@ enum class eOperandType {
     Float,
     Double
 };
+
+#endif /* EOPERANDTYPE_HPP */
