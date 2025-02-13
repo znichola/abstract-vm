@@ -85,6 +85,8 @@ public:
             return Factory().createOperand(getType(), std::to_string(static_cast<T>(res))); // use the facotry for this
         } else {
             IOperand const *tmp = Factory().createOperand(rhs.getType(), toString());
+            // TODO: fix this error the toValue is wrong, it should use the 
+            // more persise functions conversion, explain below.
             T res = fn(toValue(tmp->toString()), toValue(rhs.toString()));
             delete tmp;
             return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
