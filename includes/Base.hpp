@@ -85,9 +85,9 @@ public:
             return Factory().createOperand(getType(), std::to_string(static_cast<T>(res))); // use the facotry for this
         } else {
             IOperand const *tmp = Factory().createOperand(rhs.getType(), toString());
-            IOperand const *res = *tmp + rhs;
+            T res = fn(toValue(tmp->toString()), toValue(rhs.toString()));
             delete tmp;
-            return res;
+            return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
         }
     }
 
