@@ -6,6 +6,7 @@
 # include <iostream>
 # include <cstdint>
 # include <functional>
+# include <cmath>
 
 # include "IOperand.hpp"
 # include "Factory.hpp"
@@ -108,7 +109,13 @@ public:
     }
 
     IOperand const * operator%( IOperand const &rhs ) const {
-        return apply([](T a, T b) { return a % b; }, rhs);
+        if (getType() == eOperandType::Float
+                || getType() == eOperandType::Double
+                || rhs.getType() == eOperandType::Float
+                || rhs.getType() == eOperandType::Double) {
+            return apply([](T a, T b) { return a / b; }, rhs);
+        }
+        return apply([](T a, T b) { return a / b; }, rhs);
     }
 };
 
