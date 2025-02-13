@@ -14,16 +14,17 @@
 template <typename T>
 class Base: public IOperand {
 private:
-    std::string value;
+    std::string _value;
 public:
 // Default constructor
-    Base() : value("") {}
+    Base() : _value("") {}
 
-    Base(std::string v) : value(v) {}
+    Base(std::string v) : _value(v) {}
 
 // Copy constructor
     Base(const Base &other) {
-    value = other.value;
+    *this = other;
+    //_value = other._value;
 }
 
 // Destructor
@@ -31,7 +32,7 @@ public:
 
 // Copy assignment operator
     Base &operator=(const Base &other) {
-    value = other.value;
+    _value = other._value;
 	return *this;
 }
 
@@ -55,7 +56,7 @@ public:
     }
 
     std::string const & toString(void) const {
-        return value;
+        return _value;
     }
 
     T toValue(const std::string &s) const {
@@ -81,7 +82,7 @@ public:
 
     IOperand const * apply(std::function<T(T, T)> fn, IOperand const &rhs) const {
         if (getPrecision() >= rhs.getPrecision()) {
-            T res = fn(toValue(value), toValue(rhs.toString()));
+            T res = fn(toValue(_value), toValue(rhs.toString()));
             return Factory().createOperand(getType(), std::to_string(static_cast<T>(res))); // use the facotry for this
         } else {
             IOperand const *tmp = Factory().createOperand(rhs.getType(), toString());

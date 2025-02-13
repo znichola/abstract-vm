@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= main Factory
+FILES	= main Factory Stack
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/
