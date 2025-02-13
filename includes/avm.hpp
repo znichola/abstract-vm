@@ -14,10 +14,6 @@
 # define AVM_HPP
 
 # include "Base.hpp"
-# include "Int16.hpp"
-# include "Int32.hpp"
-# include "Float.hpp"
-# include "Double.hpp"
 # include "Factory.hpp"
 # include "IOperand.hpp"
 # include "eOperandType.hpp"

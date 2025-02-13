@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= main Int16 Int32 Float Double Factory
+FILES	= main Factory
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/
