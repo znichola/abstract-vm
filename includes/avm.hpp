@@ -13,7 +13,7 @@
 #ifndef AVM_HPP
 # define AVM_HPP
 
-# include "Int8.hpp"
+# include "Base.hpp"
 # include "Int16.hpp"
 # include "Int32.hpp"
 # include "Float.hpp"

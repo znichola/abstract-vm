@@ -15,13 +15,15 @@ void readData(std::istream& in) {
 int main(int ac, char **av) {
     (void)av;
 
-    Int8 foo = Int8("1");
-    Int8 bar = Int8("91");
-    auto *res = foo + bar;
+    auto *foo = Factory().createOperand(eOperandType::int8, "12");
+    auto *bar = Factory().createOperand(eOperandType::int8, "12");
+    auto *res = *foo + *bar;
 
-    std::cout << foo.toString() << " + " << bar.toString() 
+    std::cout << foo->toString() << " + " << bar->toString() 
         << " = " << res->toString() << std::endl;
 
+    delete foo;
+    delete bar;
     delete res;
 
 

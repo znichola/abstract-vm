@@ -2,7 +2,7 @@
 #include <iostream>
 
 #include "Factory.hpp"
-#include "Int8.hpp"
+#include "Base.hpp"
 
 IOperand const * Factory::createOperand( eOperandType type, std::string const & value ) const {
     (void) value;
@@ -28,7 +28,7 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
 }
 
 IOperand const * Factory::createInt8( std::string const & value ) const {
-    return new Int8(value);
+    return new Base<int8_t>(value);
 }
 
 /*

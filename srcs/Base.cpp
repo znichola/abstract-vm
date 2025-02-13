@@ -3,42 +3,42 @@
 #include <iostream>
 #include <cstdint>
 
-#include "Int8.hpp"
+#include "Base.hpp"
 #include "Factory.hpp"
 
 // Default constructor
-Int8::Int8() : value("") {}
+Base::Base() : value("") {}
 
-Int8::Int8(std::string v) : value(v) {}
+Base::Base(std::string v) : value(v) {}
 
 // Copy constructor
-Int8::Int8(const Int8 &other) {
+Base::Base(const Base &other) {
 	value = other.value;
 }
 
 // Destructor
-Int8::~Int8() {}
+Base::~Base() {}
 
 // Copy assignment operator
-Int8 &Int8::operator=(const Int8 &other) {
+Base &Base::operator=(const Base &other) {
     value = other.value;
 	return *this;
 }
 
 // Methods
-eOperandType Int8::getType(void) const {
+eOperandType Base::getType(void) const {
     return eOperandType::int8;
 }
 
-int Int8::getPrecision(void) const {
+int Base::getPrecision(void) const {
     return static_cast<int>(getType());
 }
 
-std::string const & Int8::toString(void) const {
+std::string const & Base::toString(void) const {
     return value;
 }
 
-std::int8_t Int8::toValue(const std::string &s) const {
+std::int8_t Base::toValue(const std::string &s) const {
     std::int16_t v = 0;
     std::stringstream ss(s);
     ss >> v;
@@ -50,15 +50,16 @@ std::int8_t Int8::toValue(const std::string &s) const {
 
 // Operators
 
-IOperand const * Int8::operator+( IOperand const &rhs ) const {
+IOperand const * Base::operator+( IOperand const &rhs ) const {
     // this type is the highest proprity
     if (getPrecision() >= rhs.getPrecision()) {
         int8_t res = toValue(value) + toValue(rhs.toString());
-        return Factory().createOperand(eOperandType::int8, std::to_string(static_cast<int8_t>(res))); // use the facotry for this
+        return Factory().createOperand(getPrecision(), std::to_string(static_cast<int8_t>(res))); // use the facotry for this
     } else {
-        IOperand const *tmp = Factory().createOperand(eOperandType::int8, toString());
+        IOperand const *tmp = Factory().createOperand(getPrecision(), toString());
         IOperand const *res = *tmp + rhs; 
         delete tmp;
         return res;
     }
 }
+

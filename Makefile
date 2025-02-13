@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= main Int8 Int16 Int32 Float Double Factory
+FILES	= main Int16 Int32 Float Double Factory
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/
@@ -47,8 +47,10 @@ run : all
 t	: all
 	./$(NAME) tests/example.txt
 
+rt : re t
+
 leaks : re
 	$(LEAKS_CHECK) ./$(NAME)
 
-.PHONY: all clean fclean re run t leaks
+.PHONY: all clean fclean re run t rt leaks
 
