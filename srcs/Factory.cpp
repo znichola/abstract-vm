@@ -1,29 +1,20 @@
 #include <memory>
 #include <iostream>
+#include <functional>
 
 #include "Factory.hpp"
 #include "Base.hpp"
 
 IOperand const * Factory::createOperand( eOperandType type, std::string const & value ) const {
-    (void) value;
-    switch (type) {
-        case eOperandType::int8:
-            return createInt8(value);
-        break ; 
-        case eOperandType::int16:
-            return createInt16(value);
-        break ; 
-        case eOperandType::int32:
-            return createInt32(value);
-        break ; 
-        case eOperandType::Float:
-            return createFloat(value);
-        break ; 
-        case eOperandType::Double:
-            return createDouble(value);
-        break ; 
-    }
-    return nullptr;
+    static IOperand const *(Factory::*mfs[])(std::string const &) const = {
+         &Factory::createInt8
+        ,&Factory::createInt16
+        ,&Factory::createInt32
+        ,&Factory::createFloat
+        ,&Factory::createDouble
+    };
+
+    return (this->*mfs[type])(value);
 }
 
 IOperand const * Factory::createInt8( std::string const & value ) const {

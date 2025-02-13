@@ -80,7 +80,6 @@ public:
     // Operators
 
     IOperand const * apply(std::function<T(T, T)> fn, IOperand const &rhs) const {
-        // this type is the highest proprity
         if (getPrecision() >= rhs.getPrecision()) {
             T res = fn(toValue(value), toValue(rhs.toString()));
             return Factory().createOperand(getType(), std::to_string(static_cast<T>(res))); // use the facotry for this
@@ -89,6 +88,9 @@ public:
             T res = fn(toValue(tmp->toString()), toValue(rhs.toString()));
             delete tmp;
             return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
+            // TODO : it's no longer recursive so the toValue call is with the wrong
+            // type here, it should be with the tmp toValue, but ther stupid interface
+            // does not allow for it. Might need to rethink this a bit.
         }
     }
 
