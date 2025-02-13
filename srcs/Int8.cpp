@@ -1,6 +1,7 @@
 #include <sstream>
 #include <string>
 #include <iostream>
+#include <cstdint>
 
 #include "Int8.hpp"
 
@@ -36,13 +37,13 @@ std::string const & Int8::toString(void) const {
     return value;
 }
 
-int8_t Int8::toValue(const std::string &s) const {
-    int8_t v = 0;
+std::int8_t Int8::toValue(const std::string &s) const {
+    std::int16_t v = 0;
     std::stringstream ss(s);
     ss >> v;
 
-    if (ss.fail()) {}// TODO : add error handelling for parsing error
-    std::cout << "value: " << v <<std::endl;
+    if (ss.fail()) {} // TODO : add error handelling for parsing error
+   // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
     return v;
 }
 
@@ -50,20 +51,18 @@ int8_t Int8::toValue(const std::string &s) const {
 
 IOperand const * Int8::operator+( IOperand const &rhs ) const {
     // this type is the highest proprity
-    std::cout << "FOO " << getPrecision() << " " <<  rhs.getPrecision() << "  " << (getPrecision() >= rhs.getPrecision()) << std::endl;
     if (getPrecision() >= rhs.getPrecision()) {
-
-        std::cout << "YES" << std::endl;
-        std::cout << toValue(value) << "  " << toValue(rhs.toString()) << std::endl;
         int8_t res = toValue(value) + toValue(rhs.toString());
-        std::cout << toValue(value) + toValue(rhs.toString()) << "  " << res << std::endl;
-
-        return new Int8(std::to_string(res)); // use the facotry for this
+        return new Int8(std::to_string(static_cast<int8_t>(res))); // use the facotry for this
     } else {
         std::cout << "YES" << std::endl;
-        // make a new type with factory and conver this to it,
-        // then do the math and return the new such value
 
-        return NULL;
+        // make a new type with factory and convert this to it,
+        // then do the math and return the new value
+
+        Int8 *tmp = new Int8(toString());
+        IOperand const *res = *tmp + rhs; 
+        delete tmp;
+        return res;
     }
 }

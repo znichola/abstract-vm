@@ -1,9 +1,9 @@
 NAME	= avm
 
-CC		= c++
+CC		= clang++ #g++
 CFLAGS	= -Wall -Wextra
 CFLAGS	+= -Werror
-#CFLAGS	+= -std=c++11 -pedantic
+CFLAGS	+= -std=c++14 #-pedantic
 
 ifdef DEBUG
 CFLAGS	+= -g3 -fsanitize=address

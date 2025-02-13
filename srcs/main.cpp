@@ -16,7 +16,7 @@ int main(int ac, char **av) {
     (void)av;
 
     Int8 foo = Int8("1");
-    Int8 bar = Int8("1");
+    Int8 bar = Int8("91");
     auto *res = foo + bar;
 
     std::cout << foo.toString() << " + " << bar.toString() 
