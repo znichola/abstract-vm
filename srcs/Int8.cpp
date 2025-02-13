@@ -42,6 +42,7 @@ int8_t Int8::toValue(const std::string &s) const {
     ss >> v;
 
     if (ss.fail()) {}// TODO : add error handelling for parsing error
+    std::cout << "value: " << v <<std::endl;
     return v;
 }
 
@@ -49,15 +50,17 @@ int8_t Int8::toValue(const std::string &s) const {
 
 IOperand const * Int8::operator+( IOperand const &rhs ) const {
     // this type is the highest proprity
-    std::cout << "YES" << getPrecision() << " " <<  rhs.getPrecision() <<  std::endl;
+    std::cout << "FOO " << getPrecision() << " " <<  rhs.getPrecision() << "  " << (getPrecision() >= rhs.getPrecision()) << std::endl;
     if (getPrecision() >= rhs.getPrecision()) {
 
-        std::cout << "NO`" << std::endl;
+        std::cout << "YES" << std::endl;
         std::cout << toValue(value) << "  " << toValue(rhs.toString()) << std::endl;
         int8_t res = toValue(value) + toValue(rhs.toString());
+        std::cout << toValue(value) + toValue(rhs.toString()) << "  " << res << std::endl;
 
         return new Int8(std::to_string(res)); // use the facotry for this
     } else {
+        std::cout << "YES" << std::endl;
         // make a new type with factory and conver this to it,
         // then do the math and return the new such value
 
