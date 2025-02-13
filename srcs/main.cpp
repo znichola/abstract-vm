@@ -22,6 +22,7 @@ int main(int ac, char **av) {
     std::cout << foo.toString() << " + " << bar.toString() 
         << " = " << res->toString() << std::endl;
 
+    delete res;
 
 
     return 0;

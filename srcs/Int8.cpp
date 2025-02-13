@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "Int8.hpp"
+#include "Factory.hpp"
 
 // Default constructor
 Int8::Int8() : value("") {}
@@ -53,14 +54,9 @@ IOperand const * Int8::operator+( IOperand const &rhs ) const {
     // this type is the highest proprity
     if (getPrecision() >= rhs.getPrecision()) {
         int8_t res = toValue(value) + toValue(rhs.toString());
-        return new Int8(std::to_string(static_cast<int8_t>(res))); // use the facotry for this
+        return Factory().createOperand(eOperandType::int8, std::to_string(static_cast<int8_t>(res))); // use the facotry for this
     } else {
-        std::cout << "YES" << std::endl;
-
-        // make a new type with factory and convert this to it,
-        // then do the math and return the new value
-
-        Int8 *tmp = new Int8(toString());
+        IOperand const *tmp = Factory().createOperand(eOperandType::int8, toString());
         IOperand const *res = *tmp + rhs; 
         delete tmp;
         return res;

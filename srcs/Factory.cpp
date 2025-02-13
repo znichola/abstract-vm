@@ -2,33 +2,14 @@
 #include <iostream>
 
 #include "Factory.hpp"
+#include "Int8.hpp"
 
-
-// Default constructor
-Factory::Factory() {
-}
-
-// Copy constructor
-Factory::Factory(const Factory &other) {
-	*this = other;
-}
-
-// Destructor
-Factory::~Factory() {
-}
-
-// Copy assignment operator
-Factory &Factory::operator=(const Factory &other) {
-	(void)other;
-	// nothing to copy,  TODO: check this is true
-	return *this;
-}
-
-std::unique_ptr<IOperand> Factory::create(eOperandType t) {
-    switch (t) {
+IOperand const * Factory::createOperand( eOperandType type, std::string const & value ) const {
+    (void) value;
+    switch (type) {
         case eOperandType::int8:
             std::cout << "int8" << std::endl; 
-          //  return std::make_unique<
+            return createInt8(value);
         break ; 
         case eOperandType::int16:
             std::cout << "int16" << std::endl; 
@@ -46,3 +27,16 @@ std::unique_ptr<IOperand> Factory::create(eOperandType t) {
     return nullptr;
 }
 
+IOperand const * Factory::createInt8( std::string const & value ) const {
+    return new Int8(value);
+}
+
+/*
+IOperand const * createInt16( std::string const & value ) const {
+    (void) value;
+    return NULL;
+}
+*/
+//IOperand const * createInt32( std::string const & value ) const {}
+//IOperand const * createFloat( std::string const & value ) const {}
+//IOperand const * createDouble( std::string const & value ) const {}
