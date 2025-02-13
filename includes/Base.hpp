@@ -1,13 +1,14 @@
 #ifndef BASE_HPP
 # define BASE_HPP
 
-#include <sstream>
-#include <string>
-#include <iostream>
-#include <cstdint>
+# include <sstream>
+# include <string>
+# include <iostream>
+# include <cstdint>
+# include <functional>
 
-#include "IOperand.hpp"
-#include "Factory.hpp"
+# include "IOperand.hpp"
+# include "Factory.hpp"
 
 template <typename T>
 class Base: public IOperand {
@@ -57,28 +58,57 @@ public:
     }
 
     T toValue(const std::string &s) const {
-        std::int16_t v = 0;
+        if (getType() == eOperandType::int8) {
+            std::int16_t v = 0;
+            std::stringstream ss(s);
+            ss >> v;
+
+            if (ss.fail()) {} // TODO : add error handelling for parsing error
+           // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
+            return v;
+        }
+
+        T v = 0;
         std::stringstream ss(s);
         ss >> v;
 
         if (ss.fail()) {} // TODO : add error handelling for parsing error
-       // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
         return v;
-    }
+}
 
     // Operators
 
-    IOperand const * operator+( IOperand const &rhs ) const {
+    IOperand const * apply(std::function<T(T, T)> fn, IOperand const &rhs) const {
         // this type is the highest proprity
         if (getPrecision() >= rhs.getPrecision()) {
-            T res = toValue(value) + toValue(rhs.toString());
+            T res = fn(toValue(value), toValue(rhs.toString()));
             return Factory().createOperand(getType(), std::to_string(static_cast<T>(res))); // use the facotry for this
         } else {
-            IOperand const *tmp = Factory().createOperand(getType(), toString());
-            IOperand const *res = *tmp + rhs; 
+            IOperand const *tmp = Factory().createOperand(rhs.getType(), toString());
+            IOperand const *res = *tmp + rhs;
             delete tmp;
             return res;
         }
+    }
+
+    IOperand const * operator+( IOperand const &rhs ) const {
+        return apply([](T a, T b) { return a + b; }, rhs);
+    }
+
+    IOperand const * operator-( IOperand const &rhs ) const {
+        return apply([](T a, T b) { return a - b; }, rhs);
+    }
+
+    IOperand const * operator*( IOperand const &rhs ) const {
+        return apply([](T a, T b) { return a * b; }, rhs);
+    }
+
+    IOperand const * operator/( IOperand const &rhs ) const {
+        return apply([](T a, T b) { return a / b; }, rhs);
+    }
+
+    IOperand const * operator%( IOperand const &rhs ) const {
+        return apply([](T a, T b) { return a % b; }, rhs);
     }
 };
 

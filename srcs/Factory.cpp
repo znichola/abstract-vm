@@ -8,20 +8,19 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
     (void) value;
     switch (type) {
         case eOperandType::int8:
-            std::cout << "int8" << std::endl; 
             return createInt8(value);
         break ; 
         case eOperandType::int16:
-            std::cout << "int16" << std::endl; 
+            return createInt16(value);
         break ; 
         case eOperandType::int32:
-            std::cout << "int32" << std::endl; 
+            return createInt32(value);
         break ; 
         case eOperandType::Float:
-            std::cout << "Float" << std::endl; 
+            return createFloat(value);
         break ; 
         case eOperandType::Double:
-            std::cout << "Double" << std::endl; 
+            return createDouble(value);
         break ; 
     }
     return nullptr;
@@ -31,12 +30,19 @@ IOperand const * Factory::createInt8( std::string const & value ) const {
     return new Base<int8_t>(value);
 }
 
-/*
-IOperand const * createInt16( std::string const & value ) const {
-    (void) value;
-    return NULL;
+IOperand const * Factory::createInt16( std::string const & value ) const {
+    return new Base<int16_t>(value);
 }
-*/
-//IOperand const * createInt32( std::string const & value ) const {}
-//IOperand const * createFloat( std::string const & value ) const {}
-//IOperand const * createDouble( std::string const & value ) const {}
+
+IOperand const * Factory::createInt32( std::string const & value ) const {
+    return new Base<int32_t>(value);
+}
+
+IOperand const * Factory::createFloat( std::string const & value ) const {
+    return new Base<float>(value);
+}
+
+IOperand const * Factory::createDouble( std::string const & value ) const {
+    return new Base<double>(value);
+}
+
