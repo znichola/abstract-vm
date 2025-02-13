@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <iostream>
 
 #include "avm.hpp"
 
@@ -14,9 +15,13 @@ void readData(std::istream& in) {
 int main(int ac, char **av) {
     (void)av;
 
-    Int8 foo = Int8("12");
-    
-    std::cout << foo.toString() << std::endl;
+    Int8 foo = Int8("1");
+    Int8 bar = Int8("1");
+    auto *res = foo + bar;
+
+    std::cout << foo.toString() << " + " << bar.toString() 
+        << " = " << res->toString() << std::endl;
+
 
 
     return 0;

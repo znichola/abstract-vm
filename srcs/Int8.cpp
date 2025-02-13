@@ -1,3 +1,7 @@
+#include <sstream>
+#include <string>
+#include <iostream>
+
 #include "Int8.hpp"
 
 // Default constructor
@@ -38,33 +42,25 @@ int8_t Int8::toValue(const std::string &s) const {
     ss >> v;
 
     if (ss.fail()) {}// TODO : add error handelling for parsing error
-
     return v;
 }
 
 // Operators
 
 IOperand const * Int8::operator+( IOperand const &rhs ) const {
-    if (getPrecision() == rhs.getPrecision()) {
-        // TODO : convert the commong value, helper function needed!
+    // this type is the highest proprity
+    std::cout << "YES" << getPrecision() << " " <<  rhs.getPrecision() <<  std::endl;
+    if (getPrecision() >= rhs.getPrecision()) {
 
+        std::cout << "NO`" << std::endl;
+        std::cout << toValue(value) << "  " << toValue(rhs.toString()) << std::endl;
+        int8_t res = toValue(value) + toValue(rhs.toString());
+
+        return new Int8(std::to_string(res)); // use the facotry for this
+    } else {
+        // make a new type with factory and conver this to it,
+        // then do the math and return the new such value
+
+        return NULL;
     }
-
-    // eOperandType pres = getPrecision() >= rhs.getPrecision() ? getType() : rhs.getType();
-
-
-
-    // in board strokes what needs to happen here is:
-    // we get the two values a + b
-    // aka this + rhs
-    // then we need to figure out who has persision
-    // convert everything to this
-    // do the op
-    // return the result
-
-    // this means I need a function to convert any 
-    // value to any other, no matter the string format
-
-    return new Int8(value);
 }
-
