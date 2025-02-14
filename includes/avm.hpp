@@ -15,6 +15,7 @@
 
 # include "Base.hpp"
 # include "Factory.hpp"
+# include "Stack.hpp"
 # include "IOperand.hpp"
 # include "eOperandType.hpp"
 

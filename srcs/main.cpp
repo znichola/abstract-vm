@@ -34,7 +34,23 @@ int main(int ac, char **av) {
     auto *r = *d + *f;
 
     std::cout << "f:" << f->toString() << " d:" << d->toString() << " r:" << r->toString() << std::endl;
+
+    Stack stack = Stack();
+
+    stack.push(foo);
+    stack.push(bar);
+
+    stack.dump();
     
+    stack.add();
+
+    stack.dump();
+
+    stack.exit();
+
+    auto bleh = stack.pop();
+    std::cout << "bleh " << bleh->toString() << std::endl;
+    delete bleh;
 
     delete r;
     delete f;
@@ -42,8 +58,8 @@ int main(int ac, char **av) {
 
     delete m;
     delete i;
-    delete foo;
-    delete bar;
+//    delete foo;
+//    delete bar;
     delete res;
 
     return 0;
