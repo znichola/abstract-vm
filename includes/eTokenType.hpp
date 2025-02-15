@@ -23,6 +23,7 @@ enum eTokenType {
     ,t_print
     ,t_exit
 
+    ,t_com
     ,t_sep
     ,t_err
 };

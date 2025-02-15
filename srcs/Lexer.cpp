@@ -43,15 +43,15 @@ std::vector<Token> Lexer::tokenize(const std::string &line) const {
         ,{std::regex(R"(int8\((-?[0-9]+)\))"),  eTokenType::t_int8}
         ,{std::regex(R"(int16\((-?[0-9]+)\))"), eTokenType::t_int16}
         ,{std::regex(R"(int32\((-?[0-9]+)\))"), eTokenType::t_int32}
-        ,{std::regex(R"(float\((-?[0-9]+.[0-9]+)\))"),  eTokenType::t_float}
-        ,{std::regex(R"(double\((-?[0-9]+.[0-9]+)\))"), eTokenType::t_double}
+        ,{std::regex(R"(float\((-?[0-9]+\.[0-9]+)\))"),  eTokenType::t_float}
+        ,{std::regex(R"(double\((-?[0-9]+\.[0-9]+)\))"), eTokenType::t_double}
 
-        ,{std::regex("\\n+"),    eTokenType::t_sep}
-
-        ,{std::regex("(.)"),       eTokenType::t_err}
+        ,{std::regex(";.+"),  eTokenType::t_com}
+        ,{std::regex("\\n+"), eTokenType::t_sep}
+        ,{std::regex("(.)"),  eTokenType::t_err} // must be last!
     };
 
-    std::vector<Token>tokens({});
+    std::vector<Token> tokens;
 
     std::string match_on = line;
     while (match_on.length() != 0) {
@@ -59,22 +59,12 @@ std::vector<Token> Lexer::tokenize(const std::string &line) const {
         for (const auto &[regex, type] : tokenRegex) {
             std::smatch match;
             if (std::regex_search(match_on, match, regex, std::regex_constants::match_continuous)) {
-                std::cout << "Match size: " << match.size() << " : ";
-                for (std::size_t i = 0; i < match.size(); i++) {
-                    std::cout << match[i] << " ";
+                if (match.size() == 1) {
+                    tokens.push_back({type});
+                } else {
+                    tokens.push_back({type, std::string(match[1])});
                 }
-                std::cout << std::endl;
-                match_on = match.suffix();
-                /*
-                Token token(type);
-
-                if (match.size() == 2) {
-                    token.data = match[1];
-                }
-                std::cout << "TOKEN " << token << std::endl;
-                tokens.push_back(token);
-                */
-                tokens.push_back({type, match.size() == 2 ? std::optional<std::string>{match[1]} : std::nullopt});
+                match_on = match.suffix(); // must be last! all match indexs ref to this
                 break;
             }
         }

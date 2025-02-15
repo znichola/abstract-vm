@@ -23,6 +23,7 @@ const std::string &tokenTypeToString(eTokenType type) {
         ,{t_print,  "print"}
         ,{t_exit,   "exit"}
 
+        ,{t_com,    "com"}
         ,{t_sep,    "sep"}
         ,{t_err,    "err"}
     };
@@ -43,7 +44,7 @@ std::ostream &operator<<(std::ostream &os, const std::vector<Token>& tokens) {
     os << "[";
     bool first = true;
     for (const auto &token : tokens) {
-        if (!first) os << " ,";
+        if (!first) os << ", ";
         os << token;
         first = false;
     }
