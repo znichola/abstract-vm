@@ -8,22 +8,8 @@
 
 class Lexer
 {
-private:
-
 public:
-// Default constructor
-	Lexer();
-
-// Copy constructor
-	Lexer(const Lexer &other);
-
-// Destructor
-	~Lexer();
-
-// Copy assignment operator
-	Lexer & operator=(const Lexer &other);
-
-    std::vector<Token> tokenize(const std::string &line) const;
+    static std::vector<Token> tokenize(const std::string &line);
 };
 
 #endif /* LEXER_HPP */

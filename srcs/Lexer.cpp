@@ -5,27 +5,7 @@
 
 #include "Lexer.hpp"
 
-// Default constructor
-Lexer::Lexer() {
-}
-
-// Copy constructor
-Lexer::Lexer(const Lexer &other) {
-	*this = other;
-}
-
-// Destructor
-Lexer::~Lexer() {
-}
-
-// Copy assignment operator
-Lexer &Lexer::operator=(const Lexer &other) {
-	(void)other;
-	// TODO: insert return statement here
-	return *this;
-}
-
-std::vector<Token> Lexer::tokenize(const std::string &line) const {
+std::vector<Token> Lexer::tokenize(const std::string &line) {
 
     static std::vector<std::pair<std::regex, eTokenType>> tokenRegex = {
          {std::regex("push "),   eTokenType::t_push}

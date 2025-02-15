@@ -15,7 +15,13 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= main Factory Stack Lexer Token
+FILES	= Factory Stack Lexer Token
+
+MAIN_SRC	= srcs/main.cpp
+MAIN_OBJ	= objs/main.o
+
+TEST_MAIN_SRC	= tests/main.cpp
+TEST_MAIN_OBJ	= tests/main.o
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/
@@ -30,14 +36,14 @@ $(OBJS_PATH)%.o: $(SRCS_PATH)%.cpp
 	@mkdir -p $(@D)
 	$(CC) $(CFLAGS) -c $(INCS_PATH) -o $@ $<
 
-$(NAME)	: $(OBJS)
-	$(CC) $(CFLAGS) $(OBJS) -o $@
+$(NAME)	: $(OBJS) $(MAIN_OBJ)
+	$(CC) $(CFLAGS) $(OBJS) $(MAIN_OBJ) -o $@
 
 clean	:
-	-rm $(OBJS)
+	-rm $(OBJS) $(MAIN_OBJ) 
 
 fclean	: clean
-	-rm $(NAME)
+	-rm $(NAME) $(TEST_MAIN_OBJ) tests/unit
 
 re	: fclean all
 
@@ -47,7 +53,16 @@ run : all
 t	: all
 	./$(NAME) tests/example.txt
 
-rt : re t
+$(TEST_MAIN_OBJ) : $(TEST_MAIN_SRC)
+	$(CC) $(CFLAGS) $(INCS_PATH) -c -o $@ $<
+
+tests/unit	: $(OBJS) $(TEST_MAIN_OBJ)
+	$(CC) $(CFLAGS) $(INCS_PATH) $(OBJS) $(TEST_MAIN_OBJ) -o tests/unit
+
+u	: tests/unit
+	./tests/unit
+
+rt	: re t
 
 leaks : re
 	$(LEAKS_CHECK) ./$(NAME)
