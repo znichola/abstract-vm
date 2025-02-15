@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= main Factory Stack Lexer
+FILES	= main Factory Stack Lexer Token
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/

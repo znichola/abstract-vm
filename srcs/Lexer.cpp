@@ -39,14 +39,16 @@ std::vector<Token> Lexer::tokenize(const std::string &line) const {
         ,{std::regex("mod"),     eTokenType::t_mod}
         ,{std::regex("print"),   eTokenType::t_print}
         ,{std::regex("exit"),    eTokenType::t_exit}
+        ,{std::regex("\\n+"),    eTokenType::t_sep}
 
-        ,{std::regex("\\n+"),          eTokenType::t_sep}
+        ,{std::regex("."),       eTokenType::t_err}
     };
 
     std::vector<Token>tokens({});
 
     std::string match_on = line;
     while (match_on.length() != 0) {
+        std::cout << "MATCHING: \"" << match_on << "\"" << std::endl;
         for (const auto &[regex, type] : tokenRegex) {
             std::smatch match;
             if (std::regex_search(match_on, match, regex, std::regex_constants::match_continuous)) {
@@ -56,25 +58,13 @@ std::vector<Token> Lexer::tokenize(const std::string &line) const {
                 }
                 std::cout << std::endl;
                 match_on = match.suffix();
+                tokens.push_back({type});
+                break;
             }
         }
+        //std::cout << "match_on: " << match_on << std::endl;
     }
-/*
-    //for (const std::pair<std::regex, eTokenType> &tr : tokenRegex) {
-    for (const auto &[regex, type] : tokenRegex) {
-        std::smatch match;
-        if (std::regex_search(line, match, regex, std::regex_constants::match_continuous)) {
-                std::cout << "Matched for \"" << "line" << "\"" << std::endl
-                    << "Prefix \"" << match.prefix() << std::endl
-                    << "Suffix \"" << match.suffix() << std::endl
-                    << "Size :" << match.size() << std::endl;
-                    for (std::size_t i = 0; i < match.size(); i++) {
-                            std::cout << i << " m " << match[i] << std::endl;
-                        }
-            }
-        std::cout << type << std::endl;
-    }
-*/
+
     (void)line;
     return tokens;
 }

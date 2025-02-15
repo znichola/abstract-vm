@@ -16,8 +16,11 @@ int main(int ac, char **av) {
     (void)av;
 
 
-    Lexer().tokenize("push int8(123)\n pull\n pop exit print me baby");
+    // Lexer().tokenize("push int8(123)\n pull\n pop exit print me baby");
+    auto ret = Lexer().tokenize("push \ndump\npop\n");
     
+    std::cout << "Match tokens: " << ret <<std::endl;
+
     std::cout << "END TEST LEXER" << std::endl;
 
     auto *foo = Factory().createOperand(eOperandType::e_int8, "8");

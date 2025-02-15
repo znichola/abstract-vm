@@ -11,9 +11,6 @@ enum eTokenType {
     ,t_float
     ,t_double
 
-    ,t_n
-    ,t_z
-
     ,t_push
     ,t_pop
     ,t_dump
@@ -27,7 +24,7 @@ enum eTokenType {
     ,t_exit
 
     ,t_sep
-    ,t_unknown
+    ,t_err
 };
 
 #endif /* ETOKENTYPE_HPP */
