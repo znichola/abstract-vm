@@ -10,7 +10,7 @@
 
 struct Token {
     eTokenType type;
-    std::optional<std::string> s = {};
+    std::optional<std::string> data = {};
 };
 
 const std::string &tokenTypeToString(eTokenType type);

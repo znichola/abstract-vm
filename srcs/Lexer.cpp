@@ -65,12 +65,16 @@ std::vector<Token> Lexer::tokenize(const std::string &line) const {
                 }
                 std::cout << std::endl;
                 match_on = match.suffix();
+                /*
+                Token token(type);
+
                 if (match.size() == 2) {
-                    std::string m = match[1];
-                    tokens.push_back({type, m});
-                } else {
-                    tokens.push_back({type});
+                    token.data = match[1];
                 }
+                std::cout << "TOKEN " << token << std::endl;
+                tokens.push_back(token);
+                */
+                tokens.push_back({type, match.size() == 2 ? std::optional<std::string>{match[1]} : std::nullopt});
                 break;
             }
         }

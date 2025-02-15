@@ -34,8 +34,8 @@ const std::string &tokenTypeToString(eTokenType type) {
 
 std::ostream &operator<<(std::ostream &os, const Token& token) {
     os << tokenTypeToString(token.type);
-    if (token.s.has_value())
-       os << "(" << token.s.value() << ")";
+    if (token.data.has_value())
+       os << "(" << token.data.value() << ")";
     return os;
 }
 
