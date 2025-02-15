@@ -16,7 +16,10 @@
 # include "Base.hpp"
 # include "Factory.hpp"
 # include "Stack.hpp"
+# include "Lexer.hpp"
 # include "IOperand.hpp"
 # include "eOperandType.hpp"
+# include "eTokenType.hpp"
+
 
 #endif /* AVM_HPP */

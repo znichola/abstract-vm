@@ -15,22 +15,27 @@ void readData(std::istream& in) {
 int main(int ac, char **av) {
     (void)av;
 
-    auto *foo = Factory().createOperand(eOperandType::int8, "8");
-    auto *bar = Factory().createOperand(eOperandType::int8, "12");
+
+    Lexer().tokenize("push int8(123)\n pull\n pop exit print me baby");
+    
+    std::cout << "END TEST LEXER" << std::endl;
+
+    auto *foo = Factory().createOperand(eOperandType::e_int8, "8");
+    auto *bar = Factory().createOperand(eOperandType::e_int8, "12");
     auto *res = *foo + *bar;
 
     std::cout << foo->toString() << " + " << bar->toString() 
         << " = " << res->toString() << std::endl;
 
-    auto *i = Factory().createOperand(eOperandType::int16, "16");
+    auto *i = Factory().createOperand(eOperandType::e_int16, "16");
 
     auto *m = *bar + *i; // + *bar;
 
     std::cout << "and m : " << m->toString() << std::endl;
     std::cout << "and 16 : " << i->toString() << std::endl;
 
-    auto *f = Factory().createOperand(eOperandType::Float, "8.1");
-    auto *d = Factory().createOperand(eOperandType::Double, "9.3");
+    auto *f = Factory().createOperand(eOperandType::e_Float, "8.1");
+    auto *d = Factory().createOperand(eOperandType::e_Double, "9.3");
     auto *r = *d + *f;
 
     std::cout << "f:" << f->toString() << " d:" << d->toString() << " r:" << r->toString() << std::endl;

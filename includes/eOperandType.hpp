@@ -2,11 +2,11 @@
 # define EOPERANDTYPE_HPP
 
 enum eOperandType {
-    int8,
-    int16,
-    int32,
-    Float,
-    Double
+    e_int8,
+    e_int16,
+    e_int32,
+    e_Float,
+    e_Double
 };
 
 #endif /* EOPERANDTYPE_HPP */

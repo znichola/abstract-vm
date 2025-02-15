@@ -1,9 +1,9 @@
 NAME	= avm
 
-CC		= clang++ #g++
+CC		= g++
 CFLAGS	= -Wall -Wextra
 CFLAGS	+= -Werror
-CFLAGS	+= -std=c++14 #-pedantic
+CFLAGS	+= -std=c++17 #-pedantic
 
 ifdef DEBUG
 CFLAGS	+= -g3 -fsanitize=address
@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= main Factory Stack
+FILES	= main Factory Stack Lexer
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/

@@ -59,7 +59,7 @@ void Stack::assert(Opr o) const {
 void Stack::print(void) const {
     wantToPop();
     Opr o = _stack.back();
-    if (o->getType() != eOperandType::int8)
+    if (o->getType() != eOperandType::e_int8)
         throw std::runtime_error("Not a Char");
     char c = '#';
     std::stringstream ss(o->toString());

@@ -39,16 +39,16 @@ public:
 // Methods
     eOperandType getType(void) const {
         if (typeid(T).name() == typeid(int8_t).name())
-            return eOperandType::int8;
+            return eOperandType::e_int8;
         if (typeid(T).name() == typeid(int16_t).name())
-            return eOperandType::int16;
+            return eOperandType::e_int16;
         if (typeid(T).name() == typeid(int32_t).name())
-            return eOperandType::int32;
+            return eOperandType::e_int32;
         if (typeid(T).name() == typeid(float).name())
-            return eOperandType::Float;
+            return eOperandType::e_Float;
         if (typeid(T).name() == typeid(double).name())
-            return eOperandType::Double;
-        return eOperandType::int8;
+            return eOperandType::e_Double;
+        return eOperandType::e_int8;
     }
 
     int getPrecision(void) const {
@@ -60,7 +60,7 @@ public:
     }
 
     T toValue(const std::string &s) const {
-        if (getType() == eOperandType::int8) {
+        if (getType() == eOperandType::e_int8) {
             std::int16_t v = 0;
             std::stringstream ss(s);
             ss >> v;
@@ -114,10 +114,10 @@ public:
     }
 
     IOperand const * operator%( IOperand const &rhs ) const {
-        if (getType() == eOperandType::Float
-                || getType() == eOperandType::Double
-                || rhs.getType() == eOperandType::Float
-                || rhs.getType() == eOperandType::Double) {
+        if (getType() == eOperandType::e_Float
+                || getType() == eOperandType::e_Double
+                || rhs.getType() == eOperandType::e_Float
+                || rhs.getType() == eOperandType::e_Double) {
             return apply([](T a, T b) { return a / b; }, rhs);
         }
         return apply([](T a, T b) { return a / b; }, rhs);
