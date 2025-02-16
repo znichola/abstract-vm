@@ -5,6 +5,7 @@
 
 #include "Lexer.hpp"
 
+// Tokenize this input, cannont fail.
 std::vector<Token> Lexer::tokenize(const std::string &line) {
 
     static std::vector<std::pair<std::regex, eTokenType>> tokenRegex = {
@@ -39,10 +40,15 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
         for (const auto &[regex, type] : tokenRegex) {
             std::smatch match;
             if (std::regex_search(match_on, match, regex, std::regex_constants::match_continuous)) {
-                if (match.size() == 1) {
-                    tokens.push_back({type});
+                if (type == t_err && tokens.size() > 0 && tokens.back().type == t_err) {
+                    tokens.back().data.value() += match[1];
                 } else {
-                    tokens.push_back({type, std::string(match[1])});
+                    Token token = {
+                        type,
+                        match.size() > 1 ?
+                            std::optional<std::string>(match[1]) : std::nullopt
+                    };
+                    tokens.push_back(token);
                 }
                 match_on = match.suffix(); // must be last! all match indexs ref to this
                 break;
@@ -52,3 +58,16 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
     return tokens;
 }
 
+// Lex the input, checks syntax and throws SyntaxErrors
+std::vector<SyntaxError> Lexer::lex(const std::vector<Token> & tokens) {
+    unsigned int line_number = 0;
+    std::vector<SyntaxError> ret;
+    for (const auto & token : tokens) {
+        if (token.type == t_sep) line_number++;
+        if (token.type == t_err) {
+            ret.push_back({line_number, "Unexpeted character " + token.data.value()});
+        }
+    }
+    (void) tokens;
+    return ret;
+}

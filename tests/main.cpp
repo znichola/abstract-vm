@@ -14,15 +14,43 @@ static int total_failed = 0;
 
 bool expect(bool res);
 void record_score();
-void test_lexer();
-
+void test_lexer_tokenizer();
+void test_lexer_syntax();
 
 int main(void) {
-    test_lexer();
+    test_lexer_tokenizer();
+    test_lexer_syntax();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num << "/"
          << total_num - total_failed << endl;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
+void compare_syntaxchecker(const std::string &expected, const std::string &input) {
+    auto tokens = Lexer::tokenize(input);
+    auto syntaxErrors = Lexer::lex(tokens);
+
+    std::ostringstream oss;
+    oss << syntaxErrors;
+    auto actual = oss.str();
+
+    if (expect(actual == expected)) {
+        cout << "Expected: " << expected << endl;
+        cout << "  Actual: " << actual   << endl;
+    }
+}
+
+void test_lexer_syntax() {
+    cout << "Testing the Syntax checker" << endl;
+
+    compare_syntaxchecker("[]", "push int8(12)");
+    compare_syntaxchecker("[Line 1 | ]", "push int8(12.2)");
+
+    cout << "Lexer syntax tests complete. "
+         << test_num - test_failed << "/" << test_num << endl;
+    record_score();
 }
 
 void compare_tokenizer(const std::string &expected, const std::string &input) {
@@ -39,7 +67,7 @@ void compare_tokenizer(const std::string &expected, const std::string &input) {
 }
 
 
-void test_lexer() {
+void test_lexer_tokenizer() {
     cout << "Testing the Lexer" << endl;
 
     // Math ops
@@ -87,8 +115,8 @@ void test_lexer() {
     compare_tokenizer("[sep, com, sep, com, sep, com, sep, push, int32(42), sep, push, int32(33), sep, add, sep, push, float(44.55), sep, mul, sep, push, double(42.42), sep, push, int32(42), sep, dump, sep, pop, sep, assert, double(42.42), sep, exit, sep]",
             "\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
 
-    cout << "Lexer tests complete. "
-         << test_num << "/" << test_num - test_failed << endl;
+    cout << "Tokenizer tests complete. "
+         << test_num - test_failed << "/" << test_num << endl;
     record_score();
 }
 

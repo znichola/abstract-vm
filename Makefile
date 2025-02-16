@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= Factory Stack Lexer Token
+FILES	= Factory Stack Lexer Token SyntaxError
 
 MAIN_SRC	= srcs/main.cpp
 MAIN_OBJ	= objs/main.o
