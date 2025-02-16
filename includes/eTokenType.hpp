@@ -1,9 +1,6 @@
 #ifndef ETOKENTYPE_HPP
 # define ETOKENTYPE_HPP
 
-# include <string>
-# include <utility>
-
 enum eTokenType {
      t_int8
     ,t_int16
@@ -30,5 +27,6 @@ enum eTokenType {
     ,t_sep
     ,t_err
 };
+
 
 #endif /* ETOKENTYPE_HPP */

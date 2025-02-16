@@ -62,11 +62,12 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
     return tokens;
 }
 
-// Lex the input, checks for err tokens
+std::optional<SyntaxError> isValidValue(unsigned int line_number, Token t1, Token t2);
+
+// Lex the input, checks for err tokens and some syntax errors by inspecting the tokens
 std::vector<SyntaxError> Lexer::syntaxValidate(const std::vector<Token> & tokens) {
     unsigned int line_number = 0;
     std::vector<SyntaxError> ret;
-    //for (const auto & token : tokens) {
     bool can_have_op = true;
     for (auto it = tokens.begin(); it != tokens.end(); it++) {
         auto token = *it;
@@ -77,17 +78,43 @@ std::vector<SyntaxError> Lexer::syntaxValidate(const std::vector<Token> & tokens
         if (token.type == t_err) {
             ret.push_back({line_number, "Unexpected token \"" + token.data.value() + "\""});
         }
-        std::set<eTokenType> nullaryOps = {t_pop, t_dump, t_add, t_sub, t_mul, t_div, t_mod, t_print, t_exit};
-        if (nullaryOps.find(token.type) != nullaryOps.end()) {
-            //  std::cout << "nullary op" << std::endl;
+        if (isNullaryOp(token)) {
             if (can_have_op) can_have_op = false;
             else ret.push_back({line_number, "Only one operation per line, move \"" + tokenTypeToString(token.type) + "\""});
         }
-        if (token.type == t_push || token.type == t_assert) {
-            // Unary token, looks ahead by one
+        if (isUnaryOp(token)) {
             if (can_have_op) can_have_op = false;
             else ret.push_back({line_number, "Only one operation per line, move \"" + tokenTypeToString(token.type) + "\""});
+
+            auto plus1 = std::next(it);
+            auto plus2 = std::next(it, 2);
+            if (plus1 == tokens.end() || plus2 == tokens.end())
+                ret.push_back({line_number, "Incomplete value with \"" + tokenTypeToString(token.type) + "\""});
+            else {
+                auto res = isValidValue(line_number, *plus1, *plus2);
+                if (res.has_value()) ret.push_back(res.value());
+            }
         }
     }
     return ret;
+}
+
+std::optional<SyntaxError> isValidValue(unsigned int line_number, Token t1, Token t2) {
+    if (!isValue(t1))
+        return std::optional<SyntaxError>({line_number, "Value must follow an operation \""
+            + tokenTypeToString(t1.type) + "\""});
+    if (!(t2.type == t_n || t2.type == t_z))
+        return std::optional<SyntaxError>({line_number, "Numeric value must be specified \""
+            + tokenTypeToString(t2.type) + "\""});
+
+    if (t1.type == t_float || t1.type == t_double) {
+        if (t2.type != t_z) 
+            return std::optional<SyntaxError>({line_number, "Value missmatch \"" + tokenTypeToString(t1.type)
+                + "\" with \"" + t2.data.value() + "\""});
+    } else {
+        if (t2.type != t_n)
+            return std::optional<SyntaxError>({line_number, "Value missmatch \"" + tokenTypeToString(t1.type)
+                + "\" with \"" + t2.data.value() + "\""});
+    }
+    return std::nullopt;
 }

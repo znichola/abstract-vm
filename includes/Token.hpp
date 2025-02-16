@@ -13,6 +13,10 @@ struct Token {
     std::optional<std::string> data = std::nullopt;
 };
 
+bool isNullaryOp(Token token);
+bool isUnaryOp(Token token);
+bool isValue(Token token);
+
 const std::string &tokenTypeToString(eTokenType type);
 
 std::ostream &operator<<(std::ostream &os, const Token& token);

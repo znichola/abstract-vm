@@ -1,4 +1,5 @@
 #include <map>
+#include <set>
 
 #include "Token.hpp"
 
@@ -54,3 +55,35 @@ std::ostream &operator<<(std::ostream &os, const std::vector<Token>& tokens) {
     os << "]";
     return os;
 }
+
+bool isNullaryOp(Token token) {
+    std::set<eTokenType> nullaryOps = {
+         t_pop
+        ,t_dump
+        ,t_add
+        ,t_sub
+        ,t_mul
+        ,t_div
+        ,t_mod
+        ,t_print
+        ,t_exit
+    };
+
+    return nullaryOps.find(token.type) != nullaryOps.end();
+}
+
+bool isUnaryOp(Token token) {
+    return token.type == t_push || token.type == t_assert;
+}
+
+bool isValue(Token token) {
+    std::set<eTokenType> values = {
+         t_int8
+        ,t_int16
+        ,t_int32
+        ,t_float
+        ,t_double
+   };
+    return values.find(token.type) != values.end();
+}
+

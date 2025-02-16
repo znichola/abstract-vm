@@ -22,8 +22,8 @@ int main(void) {
     test_lexer_syntax();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
-         << " : " << total_num << "/"
-         << total_num - total_failed << endl;
+         << " : " << total_num - total_failed << "/" << total_num
+         << endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -53,6 +53,10 @@ void test_lexer_syntax() {
             "add div");
     compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"assert\"]",
             "push int8(2) assert int8(0)");
+    compare_syntaxchecker("[Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]",
+            "push pop");
+    compare_syntaxchecker("[Line 0 | Some sort of error]",
+            "int8(16)"); // Maybe moved to parsing errors?
 
     cout << "Lexer syntax tests complete. "
          << test_num - test_failed << "/" << test_num << endl;
