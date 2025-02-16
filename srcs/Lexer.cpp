@@ -2,6 +2,7 @@
 #include <regex>
 #include <utility>
 #include <iostream>
+#include <set>
 
 #include "Lexer.hpp"
 
@@ -61,16 +62,32 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
     return tokens;
 }
 
-// Lex the input, checks syntax and throws SyntaxErrors
-std::vector<SyntaxError> Lexer::lex(const std::vector<Token> & tokens) {
+// Lex the input, checks for err tokens
+std::vector<SyntaxError> Lexer::syntaxValidate(const std::vector<Token> & tokens) {
     unsigned int line_number = 0;
     std::vector<SyntaxError> ret;
-    for (const auto & token : tokens) {
-        if (token.type == t_sep) line_number++;
+    //for (const auto & token : tokens) {
+    bool can_have_op = true;
+    for (auto it = tokens.begin(); it != tokens.end(); it++) {
+        auto token = *it;
+        if (token.type == t_sep) {
+            line_number++;
+            can_have_op = true;
+        }
         if (token.type == t_err) {
-            ret.push_back({line_number, "Unexpeted character " + token.data.value()});
+            ret.push_back({line_number, "Unexpected token \"" + token.data.value() + "\""});
+        }
+        std::set<eTokenType> nullaryOps = {t_pop, t_dump, t_add, t_sub, t_mul, t_div, t_mod, t_print, t_exit};
+        if (nullaryOps.find(token.type) != nullaryOps.end()) {
+            //  std::cout << "nullary op" << std::endl;
+            if (can_have_op) can_have_op = false;
+            else ret.push_back({line_number, "Only one operation per line, move \"" + tokenTypeToString(token.type) + "\""});
+        }
+        if (token.type == t_push || token.type == t_assert) {
+            // Unary token, looks ahead by one
+            if (can_have_op) can_have_op = false;
+            else ret.push_back({line_number, "Only one operation per line, move \"" + tokenTypeToString(token.type) + "\""});
         }
     }
-    (void) tokens;
     return ret;
 }

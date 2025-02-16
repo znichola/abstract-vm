@@ -30,7 +30,7 @@ int main(void) {
 
 void compare_syntaxchecker(const std::string &expected, const std::string &input) {
     auto tokens = Lexer::tokenize(input);
-    auto syntaxErrors = Lexer::lex(tokens);
+    auto syntaxErrors = Lexer::syntaxValidate(tokens);
 
     std::ostringstream oss;
     oss << syntaxErrors;
@@ -39,6 +39,7 @@ void compare_syntaxchecker(const std::string &expected, const std::string &input
     if (expect(actual == expected)) {
         cout << "Expected: " << expected << endl;
         cout << "  Actual: " << actual   << endl;
+        cout << "  Tokens: " << tokens   << endl;
     }
 }
 
@@ -46,7 +47,12 @@ void test_lexer_syntax() {
     cout << "Testing the Syntax checker" << endl;
 
     compare_syntaxchecker("[]", "push int8(12)");
-    compare_syntaxchecker("[Line 1 | ]", "push int8(12.2)");
+    compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"]",
+            "pop\nbzz\ndiv \nfoo");
+    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"div\"]",
+            "add div");
+    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"assert\"]",
+            "push int8(2) assert int8(0)");
 
     cout << "Lexer syntax tests complete. "
          << test_num - test_failed << "/" << test_num << endl;

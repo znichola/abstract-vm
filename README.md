@@ -15,7 +15,7 @@ There is parsing & runtime. The errors should therefore be split between two cla
 
 ### Lexographic errors (syntax)
 
-These come from the lexer, and analysing the token stream. They do not throw, but rather are returned from the `Lexer::lex` function. Eg `int8(bzz)` -> TODO define error type or `push fufu` -> 'fufu' unknown value, `pushh` -> unknown instruction 'pushh'. or `push push` -> Push must be followed by a value.
+These come from the lexer, and analysing the token stream. They do not throw, but rather are returned from the `Lexer::syntaxValidate` function. Eg `int8(bzz)` -> TODO define error type or `push fufu` -> 'fufu' unknown value, `pushh` -> unknown instruction 'pushh'. or `push push` -> Push must be followed by a value.
 
 ### Parsing errors (syntax + sematic)
 
