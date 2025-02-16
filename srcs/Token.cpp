@@ -11,6 +11,9 @@ const std::string &tokenTypeToString(eTokenType type) {
         ,{t_float,  "float"}
         ,{t_double, "double"}
 
+        ,{t_n,      "N"}
+        ,{t_z,      "Z"}
+
         ,{t_push,   "push"}
         ,{t_pop,    "pop"}
         ,{t_dump,   "dump"}

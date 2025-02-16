@@ -78,41 +78,41 @@ void test_lexer_tokenizer() {
     compare_tokenizer("[mod]", "mod");
 
     // Stack ops
-    compare_tokenizer("[push, int8(42)]", "push int8(42)");
-    compare_tokenizer("[push, int16(-123)]", "push int16(-123)");
-    compare_tokenizer("[push, int32(99999)]", "push int32(99999)");
-    compare_tokenizer("[push, float(3.14)]", "push float(3.14)");
-    compare_tokenizer("[push, double(-2.718)]", "push double(-2.718)");
+    compare_tokenizer("[push, int8, N(42)]", "push int8(42)");
+    compare_tokenizer("[push, int16, N(-123)]", "push int16(-123)");
+    compare_tokenizer("[push, int32, N(99999)]", "push int32(99999)");
+    compare_tokenizer("[push, float, Z(3.14)]", "push float(3.14)");
+    compare_tokenizer("[push, double, Z(-2.718)]", "push double(-2.718)");
     compare_tokenizer("[pop]", "pop");
     compare_tokenizer("[dump]", "dump");
 
     // Assertions
-    compare_tokenizer("[assert, int8(0)]", "assert int8(0)");
-    compare_tokenizer("[assert, int16(-32768)]", "assert int16(-32768)");
+    compare_tokenizer("[assert, int8, N(0)]", "assert int8(0)");
+    compare_tokenizer("[assert, int16, N(-32768)]", "assert int16(-32768)");
 
     // Print and Exit
     compare_tokenizer("[print]", "print");
     compare_tokenizer("[exit]", "exit");
 
     // Separators
-    compare_tokenizer("[push, int8(123), sep, push, int16(456)]", "push int8(123)\npush int16(456)");
-    compare_tokenizer("[sep, push, int8(77), sep, dump, sep]", "\npush int8(77)\ndump\n");
+    compare_tokenizer("[push, int8, N(123), sep, push, int16, N(456)]", "push int8(123)\npush int16(456)");
+    compare_tokenizer("[sep, push, int8, N(77), sep, dump, sep]", "\npush int8(77)\ndump\n");
 
     // Comments
     compare_tokenizer("[com]", "; This is a comment");
-    compare_tokenizer("[push, int8(5), sep, com, sep]", "push int8(5)\n; comment\n");
+    compare_tokenizer("[push, int8, N(5), sep, com, sep]", "push int8(5)\n; comment\n");
 
     // Invalid tokens
     compare_tokenizer("[err(i)]", "i");
     compare_tokenizer("[err(#), push, err(@)]", "#push @");
 
     // Complex
-    compare_tokenizer("[push, int8(50), sep, push, int16(-22), sep, add, sep, pop, sep, print, sep, exit]", 
+    compare_tokenizer("[push, int8, N(50), sep, push, int16, N(-22), sep, add, sep, pop, sep, print, sep, exit]", 
                       "push int8(50)\npush int16(-22)\nadd\npop\nprint\nexit");
-    compare_tokenizer("[sep, push, int8(123), sep]", "\n\npush int8(123)\n\n");
-    compare_tokenizer("[push, int16(123), sep, push, int32(32)]", "push int16(123)\npush int32(32)");
+    compare_tokenizer("[sep, push, int8, N(123), sep]", "\n\npush int8(123)\n\n");
+    compare_tokenizer("[push, int16, N(123), sep, push, int32, N(32)]", "push int16(123)\npush int32(32)");
 
-    compare_tokenizer("[sep, com, sep, com, sep, com, sep, push, int32(42), sep, push, int32(33), sep, add, sep, push, float(44.55), sep, mul, sep, push, double(42.42), sep, push, int32(42), sep, dump, sep, pop, sep, assert, double(42.42), sep, exit, sep]",
+    compare_tokenizer("[sep, com, sep, com, sep, com, sep, push, int32, N(42), sep, push, int32, N(33), sep, add, sep, push, float, Z(44.55), sep, mul, sep, push, double, Z(42.42), sep, push, int32, N(42), sep, dump, sep, pop, sep, assert, double, Z(42.42), sep, exit, sep]",
             "\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
 
     cout << "Tokenizer tests complete. "

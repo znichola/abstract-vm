@@ -11,6 +11,9 @@ enum eTokenType {
     ,t_float
     ,t_double
 
+    ,t_n
+    ,t_z
+
     ,t_push
     ,t_pop
     ,t_dump

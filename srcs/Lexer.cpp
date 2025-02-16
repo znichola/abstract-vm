@@ -21,11 +21,14 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
         ,{std::regex("print"),   eTokenType::t_print}
         ,{std::regex("exit"),    eTokenType::t_exit}
 
-        ,{std::regex(R"(int8\((-?[0-9]+)\))"),  eTokenType::t_int8}
-        ,{std::regex(R"(int16\((-?[0-9]+)\))"), eTokenType::t_int16}
-        ,{std::regex(R"(int32\((-?[0-9]+)\))"), eTokenType::t_int32}
-        ,{std::regex(R"(float\((-?[0-9]+\.[0-9]+)\))"),  eTokenType::t_float}
-        ,{std::regex(R"(double\((-?[0-9]+\.[0-9]+)\))"), eTokenType::t_double}
+        ,{std::regex("int8"),   eTokenType::t_int8}
+        ,{std::regex("int16"),  eTokenType::t_int16}
+        ,{std::regex("int32"),  eTokenType::t_int32}
+        ,{std::regex("float"),  eTokenType::t_float}
+        ,{std::regex("double"), eTokenType::t_double}
+
+        ,{std::regex(R"(\((-?[0-9]+\.[0-9]+)\))"), eTokenType::t_z}
+        ,{std::regex(R"(\((-?[0-9]+)\))"),         eTokenType::t_n}
 
         ,{std::regex(";.+"),  eTokenType::t_com}
         ,{std::regex("\\n+"), eTokenType::t_sep}
