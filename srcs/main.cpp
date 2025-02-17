@@ -15,10 +15,19 @@ void readData(std::istream& in) {
 int main(int ac, char **av) {
     (void)av;
 
+    auto tokens = Lexer().tokenize("push int8(12)\npush int8(12)\nadd"); 
+    std::cout << "TOKENS: " << tokens << std::endl;
+
+    auto *k = Factory().createOperand(eOperandType::e_Float, "8.1");
+
+    auto runtime = Runtime();
+    runtime.addUnaryInst(runtime.push, k);
+
+    return 0;
 
     // Lexer().tokenize("push int8(123)\n pull\n pop exit print me baby");
     auto ret = Lexer().tokenize("GG\npush float(2.1)\npush int32(9)\ndump\npop\npush int8(123)\n");
-    
+
     std::cout << "Match tokens: " << ret <<std::endl;
 
     std::cout << "END TEST LEXER" << std::endl;
