@@ -4,8 +4,8 @@
 
 const std::string &instructionTypeToString(eInstructionType type) {
     static const std::map<eInstructionType, std::string> instructionTypeMap = {
-         {n_push,   "push"}
-        ,{n_assert, "assert"}
+         {u_push,   "push"}
+        ,{u_assert, "assert"}
 
         ,{n_pop,    "pop"}
         ,{n_dump,   "dump"}
@@ -16,7 +16,6 @@ const std::string &instructionTypeToString(eInstructionType type) {
         ,{n_mod,    "mod"}
         ,{n_print,  "print"}
         ,{n_exit,   "exit"}
-
     };
 
     static const std::string unknown = "UNKNOWN";
@@ -32,7 +31,7 @@ std::ostream &operator<<(std::ostream &os, const Instruction& instruction) {
 }
 
 std::ostream &operator<<(std::ostream &os, const std::vector<Instruction>& instructions) {
-    os << "[";
+    os << "INST: [";
     bool first = true;
     for (const auto &instruction : instructions) {
         if (!first) os << ", ";

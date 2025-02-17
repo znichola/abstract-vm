@@ -23,6 +23,10 @@ void Runtime::addInstruction(Instruction instruction) {
     _byteCode.push_back(instruction);
 }
 
+const std::vector<Instruction> & Runtime::getByteCode(void) const {
+    return _byteCode;
+}
+
 void Runtime::execute() {
     while (!_byteCode.empty()) {
         auto inst = _byteCode.front();
@@ -66,4 +70,19 @@ void Runtime::execute() {
     }
 }
 
-void execute();
+void execute() {
+
+}
+
+std::ostream &operator<<(std::ostream &os, const Runtime& runtime) {
+    os << "[";
+    bool first = true;
+    auto instructions = runtime.getByteCode();
+    for (const auto &instruction : instructions) {
+        if (!first) os << ", ";
+        os << instruction;
+        first = false;
+    }
+    os << "]";
+    return os;
+}

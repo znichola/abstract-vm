@@ -2,6 +2,9 @@
 #ifndef INSTRUCTION_HPP
 # define INSTRUCTION_HPP
 
+# include <ostream>
+# include <vector>
+
 # include "eInstructionType.hpp"
 # include "IOperand.hpp"
 

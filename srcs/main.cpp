@@ -21,7 +21,9 @@ int main(int ac, char **av) {
     auto *k = Factory().createOperand(eOperandType::e_Float, "8.1");
     (void)k;
 
-    auto runtime = Runtime();
+    auto runtime = Parser::parse(tokens);
+
+    std::cout << runtime << std::endl;
 
     return 0;
 

@@ -1,6 +1,8 @@
 #ifndef RUNTIME_HPP
 # define RUNTIME_HPP
 
+# include <iostream>
+
 # include "Stack.hpp"
 # include "Instruction.hpp"
 
@@ -24,9 +26,13 @@ public:
 
     void execute();
 
+    const std::vector<Instruction> & getByteCode(void) const;
+
 private:
     std::vector<Instruction> _byteCode;
 
 };
+
+std::ostream &operator<<(std::ostream &os, const Runtime& runtime);
 
 #endif /* RUNTIME_HPP */
