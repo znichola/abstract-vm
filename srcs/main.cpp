@@ -19,9 +19,9 @@ int main(int ac, char **av) {
     std::cout << "TOKENS: " << tokens << std::endl;
 
     auto *k = Factory().createOperand(eOperandType::e_Float, "8.1");
+    (void)k;
 
     auto runtime = Runtime();
-    runtime.addUnaryInst(runtime.push, k);
 
     return 0;
 

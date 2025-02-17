@@ -6,7 +6,7 @@
 /*   By: znichola <znichola@student.42lausanne.ch>  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/12 12:07:49 by znichola          #+#    #+#             */
-/*   Updated: 2025/02/17 11:21:47 by znichola         ###   ########.fr       */
+/*   Updated: 2025/02/17 14:59:09 by znichola         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 // Parsing & Bytecode gen
 # include "Parser.hpp"
+# include "Instruction.hpp"
 
 // Runtime
 # include "Runtime.hpp"

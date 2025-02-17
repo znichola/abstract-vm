@@ -19,12 +19,51 @@ Runtime &Runtime::operator=(const Runtime &other)
 	return *this;
 }
 
-void Runtime::addNullaryInst(NullaryInst::func_ptr fn) {
-    _byteCode.push_back(new NullaryInst(fn));
+void Runtime::addInstruction(Instruction instruction) {
+    _byteCode.push_back(instruction);
 }
 
-void Runtime::addUnaryInst(UnaryInst::func_ptr fn, const IOperand * arg) {
-    _byteCode.push_back(new UnaryInst(fn, arg));
+void Runtime::execute() {
+    while (!_byteCode.empty()) {
+        auto inst = _byteCode.front();
+
+        // TODO : handel error!
+        switch (inst.type) {
+            case (u_push) :
+                push(inst.arg);
+                break;
+            case (u_assert) :
+                assert(inst.arg);
+                break;
+            case (n_pop) :
+                pop();
+                break;
+            case (n_dump) :
+                dump();
+                break;
+            case (n_add) :
+                add();
+                break;
+            case (n_sub) :
+                sub();
+                break;
+            case (n_mul) :
+                mul();
+                break;
+            case (n_div) :
+                div();
+                break;
+            case (n_mod) :
+                mod();
+                break;
+            case (n_print) :
+                print();
+                break;
+            case (n_exit) :
+                exit();
+                break;
+        }
+    }
 }
 
 void execute();

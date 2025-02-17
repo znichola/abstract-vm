@@ -2,46 +2,10 @@
 # define RUNTIME_HPP
 
 # include "Stack.hpp"
+# include "Instruction.hpp"
 
 class Runtime : public Stack {
-
 public:
-// Constructs
-    class IInstruction {
-    public:
-        virtual void execute(Stack &stack) = 0;
-    };
-
-    class NullaryInst : public IInstruction {
-    public:
-        using func_ptr = void(*)(Stack&);
-
-        NullaryInst(func_ptr fn) : _action(fn) {}
-
-        void execute(Stack &stack) override {
-            _action(stack);
-        }
-
-    private:
-        func_ptr _action;
-    };
-
-    class UnaryInst : public IInstruction {
-    public:
-        using func_ptr = void(*)(Stack&, const IOperand *);
-
-        UnaryInst(func_ptr fn, const IOperand * arg) : _action(fn), _arg(arg) {}
-
-        void execute(Stack &stack) override {
-            _action(stack, _arg);
-        }
-
-    private:
-        func_ptr _action;
-        const IOperand * _arg;
-    };
-
-
 // Default constructor
 	Runtime();
 
@@ -56,14 +20,12 @@ public:
 
 // Methods
 
-    void addNullaryInst(NullaryInst::func_ptr fn);
-
-    void addUnaryInst(UnaryInst::func_ptr fn, const IOperand * arg);
+    void addInstruction(Instruction instruction);
 
     void execute();
 
 private:
-    std::vector<IInstruction*> _byteCode;
+    std::vector<Instruction> _byteCode;
 
 };
 
