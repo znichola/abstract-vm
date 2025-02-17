@@ -3,6 +3,7 @@
 
 # include <vector>
 # include <utility>
+# include <optional>
 
 # include "Token.hpp"
 # include "Runtime.hpp"
@@ -10,11 +11,17 @@
 class Parser
 {
 public:
-    using tok_iter = std::vector<Token>::iterator;
-    //using token_iter = std::pair<std::vector<Token>::iterator, Instruction> 
+    using TokIt   = std::vector<Token>::iterator;
+    using OptInst = std::optional<Instruction>;
+    using OptVal  = std::optional<IOperand *>;
+
     static Runtime parse(std::vector<Token> tokens);
 
-    std::pair<std::vector<Token>::iterator, Instruction> parseInstruction(tok_iter tokens);
+    static std::optional<TokIt> parseError(TokIt tok_it);
+
+    static std::pair<TokIt, OptInst> parseInstruction(TokIt tok_it);
+
+    static std::pair<TokIt, OptVal> parseValue(TokIt tok_it);
 
 //    std::pair<std::vector<Token>::iterator, IOperand *> parseValue(std::pair<std::vector<Token>::iterator tokens);
 };

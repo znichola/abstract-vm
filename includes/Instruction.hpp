@@ -5,6 +5,7 @@
 # include <ostream>
 # include <vector>
 
+# include "eTokenType.hpp"
 # include "eInstructionType.hpp"
 # include "IOperand.hpp"
 
@@ -12,6 +13,8 @@ struct Instruction {
     eInstructionType type;
     const IOperand * arg = nullptr;
 };
+
+eInstructionType InstructionFromToken(eTokenType tt);
 
 const std::string &instructionTypeToString(eInstructionType type);
 

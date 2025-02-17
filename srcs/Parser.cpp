@@ -4,11 +4,53 @@
 Runtime Parser::parse(std::vector<Token> tokens) {
     Runtime rt;
 
-    for (const auto & token : tokens) {
-        (void)token;
+    TokIt tok_it = tokens.begin();
+
+    bool sep_passed = true;
+    (void) sep_passed;
+    while (tok_it != tokens.end()) {
+
+        auto err = parseError(tok_it); // ignore error tokens
+        if (err.has_value()) {
+            tok_it = err.value();
+            continue;
+        }
+
+        auto inst = parseInstruction(tok_it);
+        if (inst.second.has_value()) {
+            rt.addInstruction(inst.second.value());
+            tok_it = inst.first;
+            continue;
+        }
+
+        std::cout << "UNKNOWN TOKEN" << *tok_it << std::endl;
     }
 
     (void)rt;
     return rt;
+}
+
+std::optional<Parser::TokIt> Parser::parseError(Parser::TokIt tok_it) {
+    if ((*tok_it).type == t_err) return tok_it + 1;
+    return std::nullopt;
+}
+
+std::pair<Parser::TokIt, Parser::OptInst> Parser::parseInstruction(Parser::TokIt tok_it) {
+    if (isNullaryOp(*tok_it)) {
+        return std::make_pair(tok_it + 1, (Instruction){InstructionFromToken(tok_it->type)});
+    }
+    if (isUnaryOp(*tok_it)) {
+        
+        return std::make_pair(tok_it + 1, (Instruction){InstructionFromToken(tok_it->type)});
+    }
+    return std::make_pair(tok_it + 1, (Instruction){n_pop});
+}
+
+std::pair<Parser::TokIt, Parser::OptVal> Parser::parseValue(Parser::TokIt tok_it) {
+    if (isValue(*tok_it)) {
+        
+    }
+
+    throw "Missing value!";
 }
 

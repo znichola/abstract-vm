@@ -1,6 +1,7 @@
 #include <map>
 
 #include "Instruction.hpp"
+#include "eTokenType.hpp"
 
 const std::string &instructionTypeToString(eInstructionType type) {
     static const std::map<eInstructionType, std::string> instructionTypeMap = {
@@ -21,6 +22,27 @@ const std::string &instructionTypeToString(eInstructionType type) {
     static const std::string unknown = "UNKNOWN";
     auto it = instructionTypeMap.find(type);
     return (it != instructionTypeMap.end()) ? it->second : unknown;
+}
+
+eInstructionType InstructionFromToken(eTokenType tt) {
+    static const std::map<eTokenType, eInstructionType> tokInstMap = {
+         {t_push,   u_push}
+        ,{t_assert, u_assert}
+
+        ,{t_pop,    n_pop}
+        ,{t_dump,   n_dump}
+        ,{t_add,    n_add}
+        ,{t_sub,    n_sub}
+        ,{t_mul,    n_mul}
+        ,{t_div,    n_div}
+        ,{t_mod,    n_mod}
+        ,{t_print,  n_print}
+        ,{t_exit,   n_exit}
+    };
+
+    auto it = tokInstMap.find(tt);
+    if (it == tokInstMap.end()) throw "error!";
+    return it->second;
 }
 
 std::ostream &operator<<(std::ostream &os, const Instruction& instruction) {
