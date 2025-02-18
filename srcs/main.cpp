@@ -25,6 +25,8 @@ int main(int ac, char **av) {
 
     std::cout << runtime << std::endl;
 
+    runtime.execute();
+
     return 0;
 
     // Lexer().tokenize("push int8(123)\n pull\n pop exit print me baby");

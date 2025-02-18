@@ -13,7 +13,7 @@ class Parser
 public:
     using TokIt   = std::vector<Token>::iterator;
     using OptInst = std::optional<Instruction>;
-    using OptVal  = std::optional<IOperand *>;
+    using OptVal  = std::optional<const IOperand *>;
 
     static Runtime parse(std::vector<Token> tokens);
 

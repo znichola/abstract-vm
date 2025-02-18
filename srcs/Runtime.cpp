@@ -31,6 +31,7 @@ void Runtime::execute() {
     while (!_byteCode.empty()) {
         auto inst = _byteCode.front();
 
+        std::cout << "EXECUTING " << inst << std::endl;
         // TODO : handel error!
         switch (inst.type) {
             case (u_push) :
@@ -67,11 +68,10 @@ void Runtime::execute() {
                 exit();
                 break;
         }
+        _byteCode.erase(_byteCode.begin());
     }
-}
-
-void execute() {
-
+    std::cout << "END EXECUTION" << std::endl;
+    dump();
 }
 
 std::ostream &operator<<(std::ostream &os, const Runtime& runtime) {
