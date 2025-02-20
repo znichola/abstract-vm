@@ -17,8 +17,8 @@ Stack::Stack(const Stack &other) {
 
 // Destructor
 Stack::~Stack() {
-    auto remove = [](const IOperand *o) { delete o; };
-    std::for_each(_stack.begin(), _stack.end(), remove);
+    //auto remove = [](const IOperand *o) { delete o; };
+    //std::for_each(_stack.begin(), _stack.end(), remove);
 }
 
 // Copy assignment operator
@@ -32,11 +32,11 @@ bool Stack::wantToPop(void) const {
     throw std::runtime_error("Can't pop empty stack");
 }
 
-void Stack::push(const IOperand * o) {
+void Stack::push(Opr o) {
     _stack.push_back(o);
 }
 
-const IOperand * Stack::pop(void) {
+Stack::Opr Stack::pop(void) {
     wantToPop();
     auto ret = _stack.back();
     _stack.pop_back();
@@ -44,7 +44,7 @@ const IOperand * Stack::pop(void) {
 }
 
 void Stack::dump(void) const {
-    auto print = [](const IOperand *o) {
+    auto print = [](Opr o) {
         std::cout << "" << o->toString() << std::endl;
     };
     std::for_each(_stack.cbegin(), _stack.cend(), print);

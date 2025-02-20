@@ -11,7 +11,7 @@
 
 struct Instruction {
     eInstructionType type;
-    const IOperand * arg = nullptr;
+    std::unique_ptr<const IOperand> arg = nullptr;
 };
 
 eInstructionType InstructionFromToken(eTokenType tt);

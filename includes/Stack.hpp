@@ -3,13 +3,15 @@
 
 # include <vector>
 # include <functional>
+# include <memory>
 
 # include "IOperand.hpp"
 
 class Stack
 {
 private:
-    using Opr = const IOperand *;
+    //using Opr = const IOperand *;
+    using Opr = std::unique_ptr<const IOperand>;
     std::vector<Opr> _stack;
 
     bool wantToPop() const;

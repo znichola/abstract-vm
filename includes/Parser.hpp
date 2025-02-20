@@ -4,6 +4,7 @@
 # include <vector>
 # include <utility>
 # include <optional>
+# include <memory>
 
 # include "Token.hpp"
 # include "Runtime.hpp"
@@ -13,7 +14,7 @@ class Parser
 public:
     using TokIt   = std::vector<Token>::iterator;
     using OptInst = std::optional<Instruction>;
-    using OptVal  = std::optional<const IOperand *>;
+    using OptVal  = std::optional<std::unique_ptr<const IOperand>>;
 
     static Runtime parse(std::vector<Token> tokens);
 

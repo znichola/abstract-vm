@@ -71,7 +71,7 @@ std::pair<Parser::TokIt, Parser::OptVal>
             auto o = it_p1->type == t_float ? e_Float : e_Double;
             if (!it_p2->data.has_value()) throw std::runtime_error("Critical error");
             return std::make_pair<Parser::TokIt, Parser::OptVal>(it_p2 + 1,
-                    Factory().createOperand(o, it_p2->data.value()));
+                    Factory().uCreateOperand(o, it_p2->data.value()));
         }
     } else {
         std::cout << *it_p1 << " THING " << *it_p2 << std::endl;
@@ -81,7 +81,7 @@ std::pair<Parser::TokIt, Parser::OptVal>
             auto o = operandTypeFromToken(it_p1->type);
             if (!it_p2->data.has_value()) throw std::runtime_error("Critical error");
             return std::make_pair<Parser::TokIt, Parser::OptVal>(it_p2 + 1,
-                    Factory().createOperand(o, it_p2->data.value()));
+                    Factory().uCreateOperand(o, it_p2->data.value()));
         }
     }
 
