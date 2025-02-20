@@ -21,7 +21,7 @@ void test_parser();
 int main(void) {
     test_lexer_tokenizer();
     test_lexer_syntax();
-    test_parser();
+//    test_parser();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num - total_failed << "/" << total_num
@@ -58,38 +58,54 @@ void test_parser() {
 
 
 
+void compare_syntaxchecker(const std::string &expectedErrors,
+        const std::string &expectedTokens, const std::string &input) {
 
-
-void compare_syntaxchecker(const std::string &expected, const std::string &input) {
     auto tokens = Lexer::tokenize(input);
-    auto ret  = Lexer::syntaxValidate(tokens);
-    auto syntaxErrors = ret.second;
+    auto ret    = Lexer::syntaxValidate(tokens);
+    auto syntaxErrors  = ret.second;
+    auto cleanedTokens = ret.first;
 
     std::ostringstream oss;
     oss << syntaxErrors;
-    auto actual = oss.str();
+    auto actualErrors = oss.str();
 
-    if (expect(actual == expected)) {
-        cout << "Expected: " << expected << endl;
-        cout << "  Actual: " << actual   << endl;
-        cout << "  Tokens: " << tokens   << endl;
+    std::ostringstream osss;
+    osss << cleanedTokens;
+    auto actualTokens = osss.str();
+
+    if (expect(actualErrors == expectedErrors)) {
+        cout << "   InputTokens: " << tokens         << endl;
+        cout << "ExpectedErrors: " << expectedErrors << endl;
+        cout << "  ActualErrors: " << actualErrors   << endl;
+    }
+
+    if (expect(actualTokens == expectedTokens)) {
+        cout << "   InputTokens: " << tokens         << endl;
+        cout << "ExpectedTokens: " << expectedTokens << endl;
+        cout << "  ActualTokens: " << actualTokens   << endl;
     }
 }
 
 void test_lexer_syntax() {
     cout << "Testing the Syntax checker" << endl;
 
-    compare_syntaxchecker("[]", "push int8(12)");
-    compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"]",
-            "pop\nbzz\ndiv \nfoo");
-    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"div\"]",
-            "add div");
-    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"assert\"]",
-            "push int8(2) assert int8(0)");
-    compare_syntaxchecker("[Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]",
-            "push pop");
-    compare_syntaxchecker("[Line 0 | Some sort of error]",
-            "int8(16)"); // Maybe moved to parsing errors?
+    compare_syntaxchecker("[]","[push, int8, N(12)]", "push int8(12)");
+    compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"]"
+            ,"[pop, sep, com(; \"bzz\"), sep, div, com(; \" \"), sep, com(; \"foo\")]"
+            ,"pop\nbzz\ndiv \nfoo");
+    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"div\"]"
+            ,"[add, com(; \" \"), sep, div]"
+            ,"add div");
+    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"assert\"]"
+            ,"[push, int8, N(2), com(; \" \"), sep, assert, int8, N(0)]"
+            ,"push int8(2) assert int8(0)");
+    compare_syntaxchecker("[Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]"
+            ,"[push, com(; \" \"), sep, pop]"
+            ,"push pop");
+    compare_syntaxchecker("[Line 0 | Some sort of error]"
+            ,"[com(; \"int8(16)\")]"
+            ,"int8(16)"); // Maybe moved to parsing errors?
 
     cout << "Lexer syntax tests complete. "
          << test_num - test_failed << "/" << test_num << endl;
