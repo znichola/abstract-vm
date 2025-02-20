@@ -5,7 +5,7 @@
 #include "Factory.hpp"
 #include "Base.hpp"
 
-IOperand const * Factory::createOperand( eOperandType type, std::string const & value ) const {
+IOperand const * Factory::createOperand(eOperandType type, std::string const & value ) const {
     static IOperand const *(Factory::*mfs[])(std::string const &) const = {
          &Factory::createInt8
         ,&Factory::createInt16
@@ -15,6 +15,10 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
     };
 
     return (this->*mfs[type])(value);
+}
+
+std::unique_ptr<IOperand const> Factory::uCreateOperand(eOperandType type, std::string const & value) const {
+    return std::unique_ptr<const IOperand>(createOperand(type, value));
 }
 
 IOperand const * Factory::createInt8( std::string const & value ) const {

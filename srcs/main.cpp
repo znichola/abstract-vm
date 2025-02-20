@@ -15,6 +15,11 @@ void readData(std::istream& in) {
 int main(int ac, char **av) {
     (void)av;
 
+    auto uptr =  Factory().uCreateOperand(e_Float, "4.2");
+
+    std::cout << uptr->toString() << std::endl;
+
+
     auto tokens = Lexer().tokenize("push int8(12)\npush int8(12)\nadd"); 
     std::cout << "TOKENS: " << tokens << std::endl;
 
