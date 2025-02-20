@@ -11,7 +11,9 @@ class Lexer
 {
 public:
     static std::vector<Token> tokenize(const std::string &line);
-    static std::vector<SyntaxError> syntaxValidate(const std::vector<Token> & tokens);
+
+    static std::pair<std::vector<Token>, std::vector<SyntaxError>>
+        syntaxValidate(const std::vector<Token> & tokens);
 
     static std::optional<SyntaxError> checkNullaryInstruction();
     static std::optional<SyntaxError> checkUnaryInstruction();

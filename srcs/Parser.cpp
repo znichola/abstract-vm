@@ -54,7 +54,9 @@ std::pair<Parser::TokIt, Parser::OptInst>
 eOperandType operandTypeFromToken(eTokenType tt);
 
 std::pair<Parser::TokIt, Parser::OptVal>
+
     Parser::parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
+
     if (!isValue(*tok_it)) {
         throw std::runtime_error("Is not value");
     }

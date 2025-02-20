@@ -62,7 +62,8 @@ void test_parser() {
 
 void compare_syntaxchecker(const std::string &expected, const std::string &input) {
     auto tokens = Lexer::tokenize(input);
-    auto syntaxErrors = Lexer::syntaxValidate(tokens);
+    auto ret  = Lexer::syntaxValidate(tokens);
+    auto syntaxErrors = ret.second;
 
     std::ostringstream oss;
     oss << syntaxErrors;

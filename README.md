@@ -8,6 +8,15 @@ The simplified steps are as follows:
 - 2. tokenize it's content
 - 3. pass tokens through lexer to assign meaning, syntax error surfaced here.
 
+
+## TODO
+
+- modify calls to create factory to use unique ptr syntax
+- modify lex syntax checker to return a "cleanup" token stream
+- this cleaned up version has as an option passed in as argument to print it to screen
+
+- Parsing errors are treated as critical,   
+
 # Parsing
 
 I think this grammar they have given us is not a [context free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) because `exit` must be the last argument, so you need to pass a variable down for it, at least I think that's how it works. It's maybe a [conjunctive grammar](https://en.wikipedia.org/wiki/Conjunctive_grammar)? but who knows. 

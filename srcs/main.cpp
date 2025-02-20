@@ -27,10 +27,8 @@ int main(int ac, char **av) {
 
     runtime.execute();
 
-    return 0;
-
     // Lexer().tokenize("push int8(123)\n pull\n pop exit print me baby");
-    auto ret = Lexer().tokenize("GG\npush float(2.1)\npush int32(9)\ndump\npop\npush int8(123)\n");
+    auto ret = Lexer::tokenize("GG\npush float(2.1)\npush int32(9)\ndump\npop\npush int8(123)\n");
 
     std::cout << "Match tokens: " << ret <<std::endl;
 
