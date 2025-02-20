@@ -15,7 +15,7 @@ endif
 
 LEAKS_CHECK = valgrind
 
-FILES	= Factory Stack Lexer Token SyntaxError Parser Runtime Instruction
+FILES	= Factory Stack Lexer Token SyntaxError Parser Runtime Instruction IOperand
 
 MAIN_SRC	= srcs/main.cpp
 MAIN_OBJ	= objs/main.o

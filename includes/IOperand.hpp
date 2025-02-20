@@ -2,6 +2,7 @@
 # define IOPERAND_HPP
 
 #include <string>
+#include <ostream>
 
 #include "eOperandType.hpp"
 
@@ -21,5 +22,7 @@ public:
 
     virtual ~IOperand( void ) {}
 };
+
+std::ostream &operator<<(std::ostream &os, const IOperand *op);
 
 #endif /* IOPERAND_HPP */

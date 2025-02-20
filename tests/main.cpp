@@ -16,10 +16,12 @@ bool expect(bool res);
 void record_score();
 void test_lexer_tokenizer();
 void test_lexer_syntax();
+void test_parser();
 
 int main(void) {
     test_lexer_tokenizer();
     test_lexer_syntax();
+    test_parser();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num - total_failed << "/" << total_num
@@ -27,6 +29,36 @@ int main(void) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+
+void compare_parser(const std::string &expected, const std::string &input) {
+    auto tokens = Lexer::tokenize(input);
+    auto runtime = Parser::parse(tokens);
+
+    std::ostringstream oss;
+    oss << runtime;
+    auto actual = oss.str();
+
+    if (expect(actual == expected)) {
+        cout << "Expected: " << expected << endl;
+        cout << "  Actual: " << actual   << endl;
+        cout << "  Tokens: " << tokens   << endl;
+    }
+
+}
+
+void test_parser() {
+    cout << "Testing the Parser" << endl;
+
+    compare_parser("[]", "push int8(42)");
+
+    cout << "Parser tests complete. "
+         << test_num - test_failed << "/" << test_num << endl;
+    record_score();
+}
+
+
+
+
 
 void compare_syntaxchecker(const std::string &expected, const std::string &input) {
     auto tokens = Lexer::tokenize(input);

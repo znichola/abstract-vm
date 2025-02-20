@@ -43,7 +43,7 @@ std::pair<Parser::TokIt, Parser::OptInst>
     }
     if (isUnaryOp(*tok_it)) {
         auto res = Parser::parseValue(tok_it + 1, it_end);
-        
+
         // must parse int, and pass it as value
         return std::make_pair(res.first,
                 (Instruction){InstructionFromToken(tok_it->type), res.second.value()});

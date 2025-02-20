@@ -7,7 +7,10 @@ The simplified steps are as follows:
 - 1. read in a file
 - 2. tokenize it's content
 - 3. pass tokens through lexer to assign meaning, syntax error surfaced here.
-- 3. 
+
+# Parsing
+
+I think this grammar they have given us is not a [context free grammar](https://en.wikipedia.org/wiki/Context-free_grammar) because `exit` must be the last argument, so you need to pass a variable down for it, at least I think that's how it works. It's maybe a [conjunctive grammar](https://en.wikipedia.org/wiki/Conjunctive_grammar)? but who knows. 
 
 ## Errors
 
@@ -30,4 +33,5 @@ These come from the runtime engine. Eg : `add` instruction pop on empty value. o
 
 - [lexers vs parsers](https://stackoverflow.com/questions/2842809/lexers-vs-parsers)
 - [Chomsky hierarchy](https://en.wikipedia.org/wiki/Chomsky_hierarchy)
+
 
