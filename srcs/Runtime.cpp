@@ -5,7 +5,7 @@ Runtime::Runtime() {}
 
 // Copy constructor
 Runtime::Runtime(const Runtime &other) : Stack(other) {
-	*this = other;
+    *this = other;
 }
 
 // Destructor
@@ -14,9 +14,8 @@ Runtime::~Runtime() {}
 // Copy assignment operator
 Runtime &Runtime::operator=(const Runtime &other)
 {
-	(void)other;
-	// TODO: insert return statement here
-	return *this;
+    _byteCode = other._byteCode;
+    return *this;
 }
 
 void Runtime::push_back(Instruction instruction) {
@@ -66,9 +65,9 @@ void Runtime::execute() {
                 break;
             case (n_exit) :
                 if (_byteCode.size() > 1)
-                    throw std::runtime_error("Instructions floowing exit");
+                    throw std::runtime_error("Instructions after exit");
                 exit();
-                break;
+                return;
         }
         _byteCode.erase(_byteCode.begin());
     }

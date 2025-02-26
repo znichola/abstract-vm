@@ -99,7 +99,7 @@ void Stack::mod(void) {
 }
 
 void Stack::exit(void) const {
-    std::cout << "EXIT" << std::endl;
+    //std::cout << "EXIT" << std::endl;
     // TODO : implement the post instruction checking
 }
 

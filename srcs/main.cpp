@@ -36,15 +36,29 @@ int main(int ac, char **av) {
     auto syntaxErrors  = s.second;
     auto cleanedTokens = s.first;
 
-    auto runtime = Parser::parse(cleanedTokens);
-
-    runtime.execute();
-
     if (syntaxErrors.size() != 0) {
-        std::cout << "Syntax errors found:" << std::endl
-                  << syntaxErrors           << std::endl
-                  << "attempting to fix before continuing" << std::endl;
+        std::cout << "Syntax errors found:" << std::endl;
+        auto print = [](const SyntaxError s) {
+            std::cout << s << std::endl;
+        };
+        std::for_each(syntaxErrors.begin(), syntaxErrors.end(), print);
+
+        std::cout << "..attempting to fix before continuing" << std::endl;
     }
+
+    Runtime runtime;
+    try {
+        runtime = Parser::parse(cleanedTokens);
+    } catch (std::exception &e) {
+        std::cerr << "Parsing : " << e.what() << std::endl;
+    }
+
+    try {
+        runtime.execute();
+    } catch (std::exception &e) {
+        std::cerr << "Runtime : " << e.what() << std::endl;
+    }
+
 
 
     return 0;

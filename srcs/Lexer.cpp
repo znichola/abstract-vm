@@ -92,6 +92,9 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
             comments.erase(comments.begin(), comments.end());
             retTok.push_back({t_sep});
 
+        } else if (token.type == t_com) {
+            comments.push_back(token);
+
         } else if (token.type == t_err) {
             retErr.push_back({line_number,
                 "Unexpected token \""
