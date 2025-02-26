@@ -8,7 +8,6 @@ The simplified steps are as follows:
 - 2. tokenize it's content
 - 3. pass tokens through lexer to assign meaning, syntax error surfaced here.
 
-
 ## TODO
 
 - modify calls to create factory to use unique ptr syntax
@@ -16,6 +15,14 @@ The simplified steps are as follows:
 - this cleaned up version has as an option passed in as argument to print it to screen
 
 - Parsing errors are treated as critical,   
+
+## Stream of thoughts about Parsing vs Lexer/Tokenizer split
+
+The code so far is split down the Tokenizer to parser. The problem is that the parsing is basically already present in the lexer/tokenizer. I transform the token stream into something that can aproximativly run, and to do this it's a whole loa of parsing really. So how do i make this split more correct and keep the envisioned functionality where i can on the fly fix the syntax tree as much as possible. 
+One idea I have is to basically keep the lexer so it just removes any error tokens as comments and add the seperators to provide a simple and correct token stream for parsing. And parsing will take care of creating a correct synax things.
+
+ok new idea. I make a thing to export the "AST" in quotes because it's a straight line. Stored in a vector. But if I can print the ast then I can very simply export it to a file for correcting the syntax. And it also means i can do actual parsing because that's what will produce the AST. Downside is I'm both rewriting the AST and making the AST at once. But this could be ok? hmmm how do i handel comments in the AST? don't want to be dragging them around for the execution structure
+
 
 # Parsing
 
