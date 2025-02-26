@@ -6,11 +6,9 @@ Runtime Parser::parse(std::vector<Token> tokens) {
 
     TokIt tok_it = tokens.begin();
 
-    bool sep_passed = true;
-    (void) sep_passed;
     while (tok_it != tokens.end()) {
 
-        auto err = parseError(tok_it); // ignore error tokens
+        auto err = parseSkipTokens(tok_it);
         if (err.has_value()) {
             tok_it = err.value();
             continue;
@@ -18,7 +16,7 @@ Runtime Parser::parse(std::vector<Token> tokens) {
 
         auto inst = parseInstruction(tok_it, tokens.end());
         if (inst.second.has_value()) {
-            rt.addInstruction(inst.second.value());
+            rt.push_back(inst.second.value());
             tok_it = inst.first;
             continue;
         }
@@ -30,32 +28,47 @@ Runtime Parser::parse(std::vector<Token> tokens) {
     return rt;
 }
 
-std::optional<Parser::TokIt>
-    Parser::parseError(Parser::TokIt tok_it) {
-    if ((*tok_it).type == t_err || tok_it->type == t_sep) return tok_it + 1;
+std::optional<Parser::TokIt> Parser::
+
+    parseSkipTokens(Parser::TokIt tok_it) {
+
+    if (tok_it->type == t_err
+        || tok_it->type == t_sep
+        || tok_it->type == t_com)
+        return tok_it + 1;
     return std::nullopt;
 }
 
-std::pair<Parser::TokIt, Parser::OptInst>
-    Parser::parseInstruction(Parser::TokIt tok_it, Parser::TokIt it_end) {
+std::pair<Parser::TokIt, Parser::OptInst> Parser::
+
+    parseInstruction(Parser::TokIt tok_it, Parser::TokIt it_end) {
+
     if (isNullaryOp(*tok_it)) {
-        return std::make_pair(tok_it + 1, (Instruction){InstructionFromToken(tok_it->type)});
+        return std::make_pair(
+                tok_it + 1,
+                (Instruction){InstructionFromToken(tok_it->type)}
+                );
     }
     if (isUnaryOp(*tok_it)) {
         auto res = Parser::parseValue(tok_it + 1, it_end);
-
-        // must parse int, and pass it as value
-        return std::make_pair(res.first,
-                (Instruction){InstructionFromToken(tok_it->type), res.second.value()});
+        return std::make_pair(
+                res.first,
+                (Instruction){
+                    InstructionFromToken(tok_it->type),
+                    res.second.value()
+                    }
+                );
     }
-    return std::make_pair(tok_it + 1, (Instruction){n_pop});
+    std::cout << *tok_it << std::endl;
+    throw std::runtime_error("Unknown instruction");
 }
 
 eOperandType operandTypeFromToken(eTokenType tt);
 
-std::pair<Parser::TokIt, Parser::OptVal>
+// Returns manually allocated Operand
+std::pair<Parser::TokIt, Parser::OptVal> Parser::
 
-    Parser::parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
+    parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
 
     if (!isValue(*tok_it)) {
         throw std::runtime_error("Is not value");
@@ -68,22 +81,28 @@ std::pair<Parser::TokIt, Parser::OptVal>
         throw std::runtime_error("Not enough to construct value");
     }
     if (it_p1->type == t_float || it_p1->type == t_double) {
-        if (it_p2->type != t_z) throw std::runtime_error("Value types don't match");
+        if (it_p2->type != t_z)
+            throw std::runtime_error("Value types don't match");
         else {
             auto o = it_p1->type == t_float ? e_Float : e_Double;
-            if (!it_p2->data.has_value()) throw std::runtime_error("Critical error");
-            return std::make_pair<Parser::TokIt, Parser::OptVal>(it_p2 + 1,
-                    Factory().createOperand(o, it_p2->data.value()));
+            if (!it_p2->data.has_value())
+                throw std::runtime_error("Critical error");
+            return std::make_pair<Parser::TokIt, Parser::OptVal>(
+                        it_p2 + 1,
+                        Factory().createOperand(o, it_p2->data.value())
+                    );
         }
     } else {
-        std::cout << *it_p1 << " THING " << *it_p2 << std::endl;
         if (it_p2->type != t_n)
             throw std::runtime_error("Value types missmatch ");
         else {
             auto o = operandTypeFromToken(it_p1->type);
-            if (!it_p2->data.has_value()) throw std::runtime_error("Critical error");
-            return std::make_pair<Parser::TokIt, Parser::OptVal>(it_p2 + 1,
-                    Factory().createOperand(o, it_p2->data.value()));
+            if (!it_p2->data.has_value())
+                throw std::runtime_error("Critical error");
+            return std::make_pair<Parser::TokIt, Parser::OptVal>(
+                        it_p2 + 1,
+                        Factory().createOperand(o, it_p2->data.value())
+                    );
         }
     }
 

@@ -19,7 +19,7 @@ Runtime &Runtime::operator=(const Runtime &other)
 	return *this;
 }
 
-void Runtime::addInstruction(Instruction instruction) {
+void Runtime::push_back(Instruction instruction) {
     _byteCode.push_back(instruction);
 }
 
@@ -31,8 +31,8 @@ void Runtime::execute() {
     while (!_byteCode.empty()) {
         auto inst = _byteCode.front();
 
-        std::cout << "EXECUTING " << inst << std::endl;
-        // TODO : handel error!
+        if (_logger)
+            std::cout << "EXECUTING " << inst << std::endl;
         switch (inst.type) {
             case (u_push) :
                 push(inst.arg);
@@ -65,13 +65,15 @@ void Runtime::execute() {
                 print();
                 break;
             case (n_exit) :
+                if (_byteCode.size() > 1)
+                    throw std::runtime_error("Instructions floowing exit");
                 exit();
                 break;
         }
         _byteCode.erase(_byteCode.begin());
     }
-    std::cout << "END EXECUTION" << std::endl;
-    dump();
+    if (_logger)
+        std::cout << "END EXECUTION" << std::endl;
 }
 
 std::ostream &operator<<(std::ostream &os, const Runtime& runtime) {

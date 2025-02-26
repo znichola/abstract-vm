@@ -47,7 +47,7 @@ void Stack::dump(void) const {
     auto print = [](const IOperand *o) {
         std::cout << "" << o->toString() << std::endl;
     };
-    std::for_each(_stack.cbegin(), _stack.cend(), print);
+    std::for_each(_stack.rbegin(), _stack.rend(), print);
 }
 
 void Stack::assert(Opr o) const {

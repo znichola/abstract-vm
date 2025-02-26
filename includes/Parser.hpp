@@ -17,7 +17,7 @@ public:
 
     static Runtime parse(std::vector<Token> tokens);
 
-    static std::optional<TokIt> parseError(TokIt tok_it);
+    static std::optional<TokIt> parseSkipTokens(TokIt tok_it);
 
     static std::pair<TokIt, OptInst> parseInstruction(TokIt tok_it, TokIt it_end);
 

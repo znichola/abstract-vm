@@ -19,9 +19,9 @@ void test_lexer_syntax();
 void test_parser();
 
 int main(void) {
-    test_lexer_tokenizer();
-    test_lexer_syntax();
-//    test_parser();
+//    test_lexer_tokenizer();
+//    test_lexer_syntax();
+    test_parser();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num - total_failed << "/" << total_num
@@ -49,7 +49,9 @@ void compare_parser(const std::string &expected, const std::string &input) {
 void test_parser() {
     cout << "Testing the Parser" << endl;
 
-    compare_parser("[]", "push int8(42)");
+    compare_parser("[push(42)]", "push int8(42)");
+    compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
+    compare_parser("[]", "push push");
 
     cout << "Parser tests complete. "
          << test_num - test_failed << "/" << test_num << endl;

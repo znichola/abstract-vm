@@ -22,7 +22,7 @@ public:
 
 // Methods
 
-    void addInstruction(Instruction instruction);
+    void push_back(Instruction instruction);
 
     void execute();
 
@@ -30,7 +30,7 @@ public:
 
 private:
     std::vector<Instruction> _byteCode;
-
+    bool _logger = false;
 };
 
 std::ostream &operator<<(std::ostream &os, const Runtime& runtime);
