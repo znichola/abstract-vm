@@ -101,7 +101,7 @@ void test_lexer_syntax() {
             ,"[push, int8, N(2), com(; \" \"), sep, assert, int8, N(0)]"
             ,"push int8(2) assert int8(0)");
     compare_syntaxchecker("[Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]"
-            ,"[push, com(; \" \"), sep, pop]"
+            ,"[com(; push), sep, pop]"
             ,"push pop");
     compare_syntaxchecker("[Line 0 | Some sort of error]"
             ,"[com(; \"int8(16)\")]"

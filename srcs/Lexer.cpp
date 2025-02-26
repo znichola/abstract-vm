@@ -86,7 +86,8 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
         if (token.type == t_sep) {
             line_number++;
             can_have_op = true;
-            // TODO push back the commented tokens
+
+            // add comments and sep
             retTok.insert(retTok.end(), comments.begin(), comments.end());
             comments.erase(comments.begin(), comments.end());
             retTok.push_back({t_sep});
@@ -104,6 +105,10 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
                 retErr.push_back({line_number,
                     "Only one operation per line, move \""
                     + tokenTypeToString(token.type) + "\""});
+
+                // add comments and sep
+                retTok.insert(retTok.end(), comments.begin(), comments.end());
+                comments.erase(comments.begin(), comments.end());
                 retTok.push_back({t_sep});
             }
             retTok.push_back(token);
@@ -114,9 +119,12 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
                 retErr.push_back({line_number,
                     "Only one operation per line, move \""
                     + tokenTypeToString(token.type) + "\""});
+
+                // add comments and sep
+                retTok.insert(retTok.end(), comments.begin(), comments.end());
+                comments.erase(comments.begin(), comments.end());
                 retTok.push_back({t_sep});
             }
-            retTok.push_back(token);
             auto plus1 = std::next(it, 1);
             auto plus2 = std::next(it, 2);
 
@@ -134,14 +142,22 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
                 auto res = isValidValue(line_number, *plus1, *plus2);
                 if (res.has_value()) {
                     retErr.push_back(res.value());
-                    comments.push_back({t_com, "; " + tokToStr(token)});
+                    comments.push_back({t_com, "; \""
+                            + tokToStr(token) + "\""});
                 } else {
+                    retTok.push_back(token);
                     retTok.push_back(*plus1);
                     retTok.push_back(*plus2);
                     it += 2;
                 }
 
             }
+        } else if (true) {
+            retErr.push_back({line_number,
+                "Lone value error \""
+                + tokenTypeToString(token.type) + "\""});
+            comments.push_back({t_com, "; \""
+                    + tokToStr(token) + "\""});
         }
     }
     retTok.insert(retTok.end(), comments.begin(), comments.end());
