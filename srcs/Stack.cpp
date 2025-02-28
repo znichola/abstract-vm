@@ -28,7 +28,11 @@ Stack &Stack::operator=(const Stack &other) {
 }
 
 bool Stack::wantToPop(void) const {
-    if (_stack.size() > 0) return true;
+   return _stack.size() > 0;
+}
+
+void Stack::wantToPopThrow(void) const {
+    if (wantToPop()) return;
     throw std::runtime_error("Can't pop empty stack");
 }
 
@@ -37,7 +41,7 @@ void Stack::push(const IOperand * o) {
 }
 
 const IOperand * Stack::pop(void) {
-    wantToPop();
+    wantToPopThrow();
     auto ret = _stack.back();
     _stack.pop_back();
     return ret;
@@ -51,13 +55,13 @@ void Stack::dump(void) const {
 }
 
 void Stack::assert(Opr o) const {
-    wantToPop();
+    wantToPopThrow();
     if (_stack.back()->toString() != o->toString())
         throw std::runtime_error("Assert failed");
 }
 
 void Stack::print(void) const {
-    wantToPop();
+    wantToPopThrow();
     Opr o = _stack.back();
     if (o->getType() != eOperandType::e_int8)
         throw std::runtime_error("Not a Char");
@@ -68,11 +72,15 @@ void Stack::print(void) const {
 }
 
 void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
-    wantToPop();
+    wantToPopThrow();
     auto lhs = pop();
-    wantToPop(); // if fails should handle a return of the first poped valeu
+    if (!wantToPop()) {
+        delete lhs;
+        wantToPopThrow();
+    }
     auto rhs = pop();
     Opr res = fn(lhs, rhs);
+    // must handle a throw, to cleanup these variables!
     delete rhs;
     delete lhs;
     push(res);

@@ -1,6 +1,8 @@
 #include "Factory.hpp"
 #include "Parser.hpp"
 
+const std::string errStr(const std::string msg, const Token tok);
+
 Runtime Parser::parse(std::vector<Token> tokens) {
     Runtime rt;
 
@@ -60,7 +62,7 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
                 );
     }
     std::cout << *tok_it << std::endl;
-    throw std::runtime_error("Unknown instruction");
+    throw std::runtime_error(errStr("Unknown instruction", *tok_it));
 }
 
 eOperandType operandTypeFromToken(eTokenType tt);
@@ -71,7 +73,7 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
     parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
 
     if (!isValue(*tok_it)) {
-        throw std::runtime_error("Is not value");
+        throw std::runtime_error(errStr("Is not a value", *tok_it));
     }
 
     auto it_p1 = tok_it;
@@ -116,4 +118,8 @@ eOperandType operandTypeFromToken(eTokenType tt) {
     if (tt == t_int16) return e_int16;
     if (tt == t_int32) return e_int32;
     throw std::runtime_error("Unknow operation type token");
+}
+
+const std::string errStr(const std::string msg, const Token tok) {
+    return msg + " " + tokToStr(tok);
 }

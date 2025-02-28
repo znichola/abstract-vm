@@ -32,7 +32,18 @@ int main(void) {
 
 void compare_parser(const std::string &expected, const std::string &input) {
     auto tokens = Lexer::tokenize(input);
-    auto runtime = Parser::parse(tokens);
+    Runtime runtime;
+    try {
+        runtime = Parser::parse(tokens);
+    }
+    catch (std::exception &e) {
+        if (expect(e.what() == expected)) {
+            cout << "Expected: " << expected << endl;
+            cout << "  Actual: " << e.what() << endl;
+            cout << "  Tokens: " << tokens   << endl;
+        }
+        return ;
+    }
 
     std::ostringstream oss;
     oss << runtime;
@@ -51,7 +62,8 @@ void test_parser() {
 
     compare_parser("[push(42)]", "push int8(42)");
     compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
-    compare_parser("[]", "push push");
+    compare_parser("Is not a value err(int7)", "push int7(123)");
+    compare_parser("Line 0 | Value types don't match", "push int8(123)\npush float(2)");
 
     cout << "Parser tests complete. "
          << test_num - test_failed << "/" << test_num << endl;

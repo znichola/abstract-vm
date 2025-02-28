@@ -19,6 +19,8 @@ bool isValue(Token token);
 
 const std::string &tokenTypeToString(eTokenType type);
 
+const std::string tokToStr(Token tok);
+
 std::ostream &operator<<(std::ostream &os, const Token& token);
 std::ostream &operator<<(std::ostream &os, const std::vector<Token>& tokens);
 

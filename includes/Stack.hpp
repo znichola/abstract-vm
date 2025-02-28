@@ -13,6 +13,7 @@ private:
     std::vector<Opr> _stack;
 
     bool wantToPop() const;
+    void wantToPopThrow() const;
     void apply(std::function<Opr(Opr, Opr)> fn);
 
 public:

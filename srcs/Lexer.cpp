@@ -9,8 +9,6 @@
 std::optional<SyntaxError>
     isValidValue(unsigned int line_number, Token t1, Token t2);
 
-std::string tokToStr(Token tok);
-
 // Tokenize this input, cannont fail.
 std::vector<Token> Lexer::tokenize(const std::string &line) {
 
@@ -198,8 +196,3 @@ std::optional<SyntaxError>
     return std::nullopt;
 }
 
-std::string tokToStr(Token tok) {
-    std::stringstream ss;
-    ss << tok;
-    return ss.str();
-}

@@ -1,5 +1,6 @@
 #include <map>
 #include <set>
+#include <sstream>
 
 #include "Token.hpp"
 
@@ -87,3 +88,8 @@ bool isValue(Token token) {
     return values.find(token.type) != values.end();
 }
 
+const std::string tokToStr(Token tok) {
+    std::stringstream ss;
+    ss << tok;
+    return ss.str();
+}
