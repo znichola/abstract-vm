@@ -4,7 +4,6 @@
 
 #include "Token.hpp"
 
-
 const std::string &tokenTypeToString(eTokenType type) {
     static const std::map<eTokenType, std::string> tokenTypeMap = {
          {t_int8,   "int8"}

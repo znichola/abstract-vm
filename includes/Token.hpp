@@ -10,6 +10,7 @@
 
 struct Token {
     eTokenType type;
+    unsigned int line_number;
     std::optional<std::string> data = std::nullopt;
 };
 

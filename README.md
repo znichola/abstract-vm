@@ -10,11 +10,8 @@ The simplified steps are as follows:
 
 ## TODO
 
-- modify calls to create factory to use unique ptr syntax
-- modify lex syntax checker to return a "cleanup" token stream
-- this cleaned up version has as an option passed in as argument to print it to screen
-
-- Parsing errors are treated as critical,   
+- Refactor tokens to store line number
+- Refactor tokens to be a class with it's own error, so I can throw it!
 
 ## Stream of thoughts about Parsing vs Lexer/Tokenizer split
 

@@ -84,7 +84,7 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
     }
     if (it_p1->type == t_float || it_p1->type == t_double) {
         if (it_p2->type != t_z)
-            throw std::runtime_error("Value types don't match");
+            throw std::runtime_error(it_p2->line_number + "Value types don't match");
         else {
             auto o = it_p1->type == t_float ? e_Float : e_Double;
             if (!it_p2->data.has_value())
@@ -96,7 +96,7 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
         }
     } else {
         if (it_p2->type != t_n)
-            throw std::runtime_error("Value types missmatch ");
+            throw std::runtime_error("Value types missmatch");
         else {
             auto o = operandTypeFromToken(it_p1->type);
             if (!it_p2->data.has_value())

@@ -10,7 +10,7 @@ std::optional<SyntaxError>
     isValidValue(unsigned int line_number, Token t1, Token t2);
 
 // Tokenize this input, cannont fail.
-std::vector<Token> Lexer::tokenize(const std::string &line) {
+std::vector<Token> Lexer::tokenize(const std::string &input) {
 
     static std::vector<std::pair<std::regex, eTokenType>> tokenRegex = {
          {std::regex("push "),   eTokenType::t_push}
@@ -41,7 +41,9 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
 
     std::vector<Token> tokens;
 
-    std::string match_on = line;
+    unsigned int line_number = 0;
+
+    std::string match_on = input;
     while (match_on.length() != 0) {
         //std::cout << "MATCHING: \"" << match_on << "\"" << std::endl;
         for (const auto &[regex, type] : tokenRegex) {
@@ -52,10 +54,12 @@ std::vector<Token> Lexer::tokenize(const std::string &line) {
                 } else {
                     Token token = {
                         type,
+                        line_number,
                         match.size() > 1 ?
                             std::optional<std::string>(match[1]) : std::nullopt
                     };
                     tokens.push_back(token);
+                    if (type == t_sep) line_number += 1;
                 }
                 match_on = match.suffix(); // must be last! all match indexs ref to this
                 break;
@@ -88,62 +92,62 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
             // add comments and sep
             retTok.insert(retTok.end(), comments.begin(), comments.end());
             comments.erase(comments.begin(), comments.end());
-            retTok.push_back({t_sep});
+            retTok.push_back({t_sep, line_number});
 
         } else if (token.type == t_com) {
             comments.push_back(token);
 
         } else if (token.type == t_err) {
-            retErr.push_back({line_number,
+            retErr.push_back({token.line_number,
                 "Unexpected token \""
                 + token.data.value() + "\""});
 
-            comments.push_back({t_com, "; \"" + token.data.value() + "\"" });
+            comments.push_back({t_com, token.line_number, "; \"" + token.data.value() + "\"" });
 
         } else if (isNullaryOp(token)) {
             if (can_have_op) can_have_op = false;
             else {
-                retErr.push_back({line_number,
+                retErr.push_back({token.line_number,
                     "Only one operation per line, move \""
                     + tokenTypeToString(token.type) + "\""});
 
                 // add comments and sep
                 retTok.insert(retTok.end(), comments.begin(), comments.end());
                 comments.erase(comments.begin(), comments.end());
-                retTok.push_back({t_sep});
+                retTok.push_back({t_sep, line_number});
             }
             retTok.push_back(token);
 
         } else if (isUnaryOp(token)) {
             if (can_have_op) can_have_op = false;
             else {
-                retErr.push_back({line_number,
+                retErr.push_back({token.line_number,
                     "Only one operation per line, move \""
                     + tokenTypeToString(token.type) + "\""});
 
                 // add comments and sep
                 retTok.insert(retTok.end(), comments.begin(), comments.end());
                 comments.erase(comments.begin(), comments.end());
-                retTok.push_back({t_sep});
+                retTok.push_back({t_sep, line_number});
             }
             auto plus1 = std::next(it, 1);
             auto plus2 = std::next(it, 2);
 
             if (plus1 == tokens.end()) {
-                retErr.push_back({line_number,
+                retErr.push_back({token.line_number,
                     "Incomplete value with \""
                     + tokenTypeToString(token.type) + "\""});
 
             } else if (plus2 == tokens.end()) {
-                retErr.push_back({line_number,
+                retErr.push_back({token.line_number,
                     "Incomplete value with \""
                     + tokenTypeToString(token.type) + "\""});
-                comments.push_back({t_com, "; " + tokToStr(token)});
+                comments.push_back({t_com, line_number, "; " + tokToStr(token)});
             } else {
                 auto res = isValidValue(line_number, *plus1, *plus2);
                 if (res.has_value()) {
                     retErr.push_back(res.value());
-                    comments.push_back({t_com, "; \""
+                    comments.push_back({t_com, line_number, "; \""
                             + tokToStr(token) + "\""});
                 } else {
                     retTok.push_back(token);
@@ -154,10 +158,10 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
 
             }
         } else if (true) {
-            retErr.push_back({line_number,
+            retErr.push_back({token.line_number,
                 "Lone value error \""
                 + tokenTypeToString(token.type) + "\""});
-            comments.push_back({t_com, "; \""
+            comments.push_back({t_com, token.line_number, "; \""
                     + tokToStr(token) + "\""});
         }
     }
