@@ -45,13 +45,13 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
 
     parseInstruction(Parser::TokIt tok_it, Parser::TokIt it_end) {
 
-    if (isNullaryOp(*tok_it)) {
+    if (tok_it->isNullaryOp()) {
         return std::make_pair(
                 tok_it + 1,
                 (Instruction){InstructionFromToken(tok_it->type)}
                 );
     }
-    if (isUnaryOp(*tok_it)) {
+    if (tok_it->isUnaryOp()) {
         auto res = Parser::parseValue(tok_it + 1, it_end);
         return std::make_pair(
                 res.first,
@@ -72,7 +72,7 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
 
     parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
 
-    if (!isValue(*tok_it)) {
+    if (!tok_it->isValue()) {
         throw std::runtime_error(errStr("Is not a value", *tok_it));
     }
 
@@ -121,5 +121,5 @@ eOperandType operandTypeFromToken(eTokenType tt) {
 }
 
 const std::string errStr(const std::string msg, const Token tok) {
-    return msg + " " + tokToStr(tok);
+    return msg + " " + tok.tokToStr();
 }

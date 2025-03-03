@@ -8,19 +8,34 @@
 
 # include "eTokenType.hpp"
 
-struct Token {
+class Token {
+public:
     eTokenType type;
     unsigned int line_number;
-    std::optional<std::string> data = std::nullopt;
+    std::optional<std::string> data;
+
+    Token();
+
+    Token(eTokenType type, unsigned int line_number);
+
+    Token(eTokenType type, unsigned int line_number,
+            std::optional<std::string> data);
+
+    Token(const Token &other);
+
+    ~Token();
+
+    Token & operator=(const Token &other);
+
+    bool isNullaryOp(void) const;
+    bool isUnaryOp(void) const;
+    bool isValue(void) const;
+
+    const std::string &tokenTypeToString(void) const;
+    const std::string tokToStr(void) const;
 };
 
-bool isNullaryOp(Token token);
-bool isUnaryOp(Token token);
-bool isValue(Token token);
 
-const std::string &tokenTypeToString(eTokenType type);
-
-const std::string tokToStr(Token tok);
 
 std::ostream &operator<<(std::ostream &os, const Token& token);
 std::ostream &operator<<(std::ostream &os, const std::vector<Token>& tokens);

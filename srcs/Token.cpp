@@ -4,7 +4,30 @@
 
 #include "Token.hpp"
 
-const std::string &tokenTypeToString(eTokenType type) {
+Token::Token() :
+    type(t_err), line_number(0), data(std::nullopt) {}
+
+Token::Token(eTokenType type, unsigned int line_number,
+        std::optional<std::string> data) :
+    type(type), line_number(line_number), data(data) {}
+
+Token::Token(eTokenType type, unsigned int line_number) :
+    type(type), line_number(line_number), data(std::nullopt) {}
+
+Token::Token(const Token &other) {
+    *this = other;
+}
+
+Token::~Token() {};
+
+Token & Token::operator=(const Token &other) {
+    type = other.type;
+    line_number = other.line_number;
+    data = other.data;
+    return *this;
+}
+
+const std::string & Token::tokenTypeToString(void) const {
     static const std::map<eTokenType, std::string> tokenTypeMap = {
          {t_int8,   "int8"}
         ,{t_int16,  "int16"}
@@ -33,12 +56,12 @@ const std::string &tokenTypeToString(eTokenType type) {
     };
 
     static const std::string unknown = "UNKNOWN";
-    auto it = tokenTypeMap.find(type);
+    auto it = tokenTypeMap.find(this->type);
     return (it != tokenTypeMap.end()) ? it->second : unknown;
 }
 
 std::ostream &operator<<(std::ostream &os, const Token& token) {
-    os << tokenTypeToString(token.type);
+    os << token.tokenTypeToString();
     if (token.data.has_value())
        os << "(" << token.data.value() << ")";
     return os;
@@ -56,7 +79,7 @@ std::ostream &operator<<(std::ostream &os, const std::vector<Token>& tokens) {
     return os;
 }
 
-bool isNullaryOp(Token token) {
+bool Token::isNullaryOp(void) const {
     std::set<eTokenType> nullaryOps = {
          t_pop
         ,t_dump
@@ -69,14 +92,14 @@ bool isNullaryOp(Token token) {
         ,t_exit
     };
 
-    return nullaryOps.find(token.type) != nullaryOps.end();
+    return nullaryOps.find(this->type) != nullaryOps.end();
 }
 
-bool isUnaryOp(Token token) {
-    return token.type == t_push || token.type == t_assert;
+bool Token::isUnaryOp(void) const {
+    return this->type == t_push || this->type == t_assert;
 }
 
-bool isValue(Token token) {
+bool Token::isValue(void) const {
     std::set<eTokenType> values = {
          t_int8
         ,t_int16
@@ -84,11 +107,11 @@ bool isValue(Token token) {
         ,t_float
         ,t_double
    };
-    return values.find(token.type) != values.end();
+    return values.find(this->type) != values.end();
 }
 
-const std::string tokToStr(Token tok) {
+const std::string Token::tokToStr(void) const {
     std::stringstream ss;
-    ss << tok;
+    ss << this;
     return ss.str();
 }

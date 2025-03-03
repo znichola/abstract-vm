@@ -52,12 +52,12 @@ std::vector<Token> Lexer::tokenize(const std::string &input) {
                 if (type == t_err && tokens.size() > 0 && tokens.back().type == t_err) {
                     tokens.back().data.value() += match[1];
                 } else {
-                    Token token = {
+                    Token token(
                         type,
                         line_number,
                         match.size() > 1 ?
                             std::optional<std::string>(match[1]) : std::nullopt
-                    };
+                            );
                     tokens.push_back(token);
                     if (type == t_sep) line_number += 1;
                 }
@@ -104,12 +104,12 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
 
             comments.push_back({t_com, token.line_number, "; \"" + token.data.value() + "\"" });
 
-        } else if (isNullaryOp(token)) {
+        } else if (token.isNullaryOp()) {
             if (can_have_op) can_have_op = false;
             else {
                 retErr.push_back({token.line_number,
                     "Only one operation per line, move \""
-                    + tokenTypeToString(token.type) + "\""});
+                    + token.tokenTypeToString() + "\""});
 
                 // add comments and sep
                 retTok.insert(retTok.end(), comments.begin(), comments.end());
@@ -118,12 +118,12 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
             }
             retTok.push_back(token);
 
-        } else if (isUnaryOp(token)) {
+        } else if (token.isUnaryOp()) {
             if (can_have_op) can_have_op = false;
             else {
                 retErr.push_back({token.line_number,
                     "Only one operation per line, move \""
-                    + tokenTypeToString(token.type) + "\""});
+                    + token.tokenTypeToString() + "\""});
 
                 // add comments and sep
                 retTok.insert(retTok.end(), comments.begin(), comments.end());
@@ -136,19 +136,19 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
             if (plus1 == tokens.end()) {
                 retErr.push_back({token.line_number,
                     "Incomplete value with \""
-                    + tokenTypeToString(token.type) + "\""});
+                    + token.tokenTypeToString() + "\""});
 
             } else if (plus2 == tokens.end()) {
                 retErr.push_back({token.line_number,
                     "Incomplete value with \""
-                    + tokenTypeToString(token.type) + "\""});
-                comments.push_back({t_com, line_number, "; " + tokToStr(token)});
+                    + token.tokenTypeToString() + "\""});
+                comments.push_back({t_com, line_number, "; " + token.tokToStr()});
             } else {
                 auto res = isValidValue(line_number, *plus1, *plus2);
                 if (res.has_value()) {
                     retErr.push_back(res.value());
                     comments.push_back({t_com, line_number, "; \""
-                            + tokToStr(token) + "\""});
+                            + token.tokToStr() + "\""});
                 } else {
                     retTok.push_back(token);
                     retTok.push_back(*plus1);
@@ -160,9 +160,9 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
         } else if (true) {
             retErr.push_back({token.line_number,
                 "Lone value error \""
-                + tokenTypeToString(token.type) + "\""});
+                + token.tokenTypeToString() + "\""});
             comments.push_back({t_com, token.line_number, "; \""
-                    + tokToStr(token) + "\""});
+                    + token.tokToStr() + "\""});
         }
     }
     retTok.insert(retTok.end(), comments.begin(), comments.end());
@@ -176,25 +176,25 @@ std::optional<SyntaxError>
 
     isValidValue(unsigned int line_number, Token t1, Token t2) {
 
-    if (!isValue(t1)) {
+    if (!t1.isValue()) {
         return std::optional<SyntaxError>({line_number,
                 "Value must follow an operation \""
-                + tokenTypeToString(t1.type) + "\""});
+                + t1.tokenTypeToString() + "\""});
     }
     if (!(t2.type == t_n || t2.type == t_z)) {
         return std::optional<SyntaxError>({line_number,
                 "Numeric value must be specified \""
-                + tokenTypeToString(t2.type) + "\""});
+                + t2.tokenTypeToString() + "\""});
     }
     if (t1.type == t_float || t1.type == t_double) {
         if (t2.type != t_z)
             return std::optional<SyntaxError>({line_number,
-                    "Value missmatch \"" + tokenTypeToString(t1.type)
+                    "Value missmatch \"" + t1.tokenTypeToString()
                     + "\" with \"" + t2.data.value() + "\""});
     } else {
         if (t2.type != t_n)
             return std::optional<SyntaxError>({line_number,
-                    "Value missmatch \"" + tokenTypeToString(t1.type)
+                    "Value missmatch \"" + t1.tokenTypeToString()
                     + "\" with \"" + t2.data.value() + "\""});
     }
     return std::nullopt;
