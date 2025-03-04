@@ -38,6 +38,7 @@ void compare_parser(const std::string &expected, const std::string &input) {
     }
     catch (std::exception &e) {
         if (expect(e.what() == expected)) {
+            cout << "Error catch" << endl;
             cout << "Expected: " << expected << endl;
             cout << "  Actual: " << e.what() << endl;
             cout << "  Tokens: " << tokens   << endl;
@@ -62,8 +63,14 @@ void test_parser() {
 
     compare_parser("[push(42)]", "push int8(42)");
     compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
+    compare_parser("[]", "");
     compare_parser("Line 0 | Is not a value \"int7\"", "push int7(123)");
     compare_parser("Line 1 | Value types don't match \"float\" with \"N(2)\"", "push int8(123)\npush float(2)");
+    compare_parser("Line 0 | Not enough to construct value for \"push\"", "push ");
+    compare_parser("Line 0 | Value types don't match \"int8\" with \"Z(123.3)\"", "push int8(123.3)");
+    compare_parser("Line 0 | Value types don't match \"float\" with \"N(123)\"", "assert float(123)");
+    compare_parser("Line 4 | Not enough to construct value for \"push\"", "\n\n\n\npush 3");
+    compare_parser("todo", "push");
 
     cout << "Parser tests complete. "
          << test_num - test_failed << "/" << test_num << endl;
@@ -120,6 +127,19 @@ void test_lexer_syntax() {
 //    compare_syntaxchecker("[Line 0 | Some sort of error]"
 //            ,"[com(; \"int8(16)\")]"
 //            ,"int8(16)"); // Maybe moved to parsing errors?
+
+    compare_syntaxchecker("[Line 0 | Unexpected token \"  \"]"
+            ,"[com(; \"  \")]"
+            ,"  ");
+    compare_syntaxchecker("[Line 0 | Did you mean \"push \"? <- <push>]"
+            ,"[push]"
+            ,"push");
+    compare_syntaxchecker("[Line 0 | Did you mean \"int8\"? <- <int>]"
+            ,"[int8]"
+            ,"int");
+    compare_syntaxchecker("[Line 0 | Did you mean \"mul\"? <- <mu>]"
+            ,"[mul]"
+            ,"mu");
 
     cout << "Lexer syntax tests complete. "
          << test_num - test_failed << "/" << test_num << endl;
@@ -180,12 +200,13 @@ void test_lexer_tokenizer() {
     compare_tokenizer("[#, push, @]", "#push @");
 
     // Complex
+    compare_tokenizer("[sep, sep, sep, sep, exit, sep]", "\n\n\n\nexit\n");
     compare_tokenizer("[push, int8, N(50), sep, push, int16, N(-22), sep, add, sep, pop, sep, print, sep, exit]", 
                       "push int8(50)\npush int16(-22)\nadd\npop\nprint\nexit");
-    compare_tokenizer("[sep, push, int8, N(123), sep]", "\n\npush int8(123)\n\n");
+    compare_tokenizer("[sep, sep, push, int8, N(123), sep, sep]", "\n\npush int8(123)\n\n");
     compare_tokenizer("[push, int16, N(123), sep, push, int32, N(32)]", "push int16(123)\npush int32(32)");
 
-    compare_tokenizer("[sep, com, sep, com, sep, com, sep, push, int32, N(42), sep, push, int32, N(33), sep, add, sep, push, float, Z(44.55), sep, mul, sep, push, double, Z(42.42), sep, push, int32, N(42), sep, dump, sep, pop, sep, assert, double, Z(42.42), sep, exit, sep]",
+    compare_tokenizer("[sep, com, sep, com, sep, com, sep, sep, push, int32, N(42), sep, push, int32, N(33), sep, sep, add, sep, sep, push, float, Z(44.55), sep, sep, mul, sep, sep, push, double, Z(42.42), sep, push, int32, N(42), sep, sep, dump, sep, sep, pop, sep, sep, assert, double, Z(42.42), sep, sep, exit, sep, sep]",
             "\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
 
     cout << "Tokenizer tests complete. "

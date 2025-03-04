@@ -7,7 +7,6 @@ Runtime Parser::parse(std::vector<Token> tokens) {
     TokIt tok_it = tokens.begin();
 
     while (tok_it != tokens.end()) {
-
         auto err = parseSkipTokens(tok_it);
         if (err.has_value()) {
             tok_it = err.value();
@@ -49,8 +48,9 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
                 (Instruction){InstructionFromToken(tok_it->type)}
                 );
     }
+
     if (tok_it->isUnaryOp()) {
-        auto res = Parser::parseValue(tok_it + 1, it_end);
+        auto res = Parser::parseValue(tok_it, it_end);
         return std::make_pair(
                 res.first,
                 (Instruction){
@@ -70,15 +70,15 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
 
     parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
 
-    if (!tok_it->isValue()) {
-        throw std::runtime_error(tok_it->genErr("Is not a value"));
-    }
-
-    auto it_p1 = tok_it;
-    auto it_p2 = tok_it + 1;
+    auto it_p1 = tok_it + 1;
+    auto it_p2 = tok_it + 2;
 
     if (it_p1 == it_end || it_p2 == it_end) {
-        throw std::runtime_error("Not enough to construct value");
+        throw std::runtime_error(tok_it->
+                genErr("Not enough to construct value for"));
+    }
+    if (!it_p1->isValue()) {
+        throw std::runtime_error(it_p1->genErr("Is not a value"));
     }
     if (it_p1->type == t_float || it_p1->type == t_double) {
         if (it_p2->type != t_z)

@@ -62,7 +62,7 @@ const std::string & Token::tokenTypeToString(void) const {
 
 std::ostream &operator<<(std::ostream &os, const Token& token) {
     if (token.type == t_err) {
-        os << token.data.value();
+        os << "" << token.data.value() << "";
     } else {
         os << token.tokenTypeToString();
         if (token.data.has_value())

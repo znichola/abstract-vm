@@ -3,39 +3,43 @@
 #include <utility>
 #include <iostream>
 #include <set>
+#include <tuple>
 
 #include "Lexer.hpp"
 
 std::optional<SyntaxError>
     isValidValue(unsigned int line_number, Token t1, Token t2);
 
+std::tuple<std::vector<Token>, std::vector<Token>, std::vector<SyntaxError>>
+    checkSpelling(Token token);
+
 // Tokenize this input, cannont fail.
 std::vector<Token> Lexer::tokenize(const std::string &input) {
 
     static std::vector<std::pair<std::regex, eTokenType>> tokenRegex = {
-         {std::regex("push "),   eTokenType::t_push}
-        ,{std::regex("pop"),     eTokenType::t_pop}
-        ,{std::regex("dump"),    eTokenType::t_dump}
-        ,{std::regex("assert "), eTokenType::t_assert}
-        ,{std::regex("add"),     eTokenType::t_add}
-        ,{std::regex("sub"),     eTokenType::t_sub}
-        ,{std::regex("mul"),     eTokenType::t_mul}
-        ,{std::regex("div"),     eTokenType::t_div}
-        ,{std::regex("mod"),     eTokenType::t_mod}
-        ,{std::regex("print"),   eTokenType::t_print}
-        ,{std::regex("exit"),    eTokenType::t_exit}
+         {std::regex("\\bpush "),   eTokenType::t_push}
+        ,{std::regex("\\bpop\\b"),     eTokenType::t_pop}
+        ,{std::regex("\\bdump\\b"),    eTokenType::t_dump}
+        ,{std::regex("\\bassert "), eTokenType::t_assert}
+        ,{std::regex("\\badd\\b"),     eTokenType::t_add}
+        ,{std::regex("\\bsub\\b"),     eTokenType::t_sub}
+        ,{std::regex("\\bmul\\b"),     eTokenType::t_mul}
+        ,{std::regex("\\bdiv\\b"),     eTokenType::t_div}
+        ,{std::regex("\\bmod\\b"),     eTokenType::t_mod}
+        ,{std::regex("\\bprint\\b"),   eTokenType::t_print}
+        ,{std::regex("\\bexit\\b"),    eTokenType::t_exit}
 
-        ,{std::regex("int8"),   eTokenType::t_int8}
-        ,{std::regex("int16"),  eTokenType::t_int16}
-        ,{std::regex("int32"),  eTokenType::t_int32}
-        ,{std::regex("float"),  eTokenType::t_float}
-        ,{std::regex("double"), eTokenType::t_double}
+        ,{std::regex("\\bint8\\b"),   eTokenType::t_int8}
+        ,{std::regex("\\bint16\\b"),  eTokenType::t_int16}
+        ,{std::regex("\\bint32\\b"),  eTokenType::t_int32}
+        ,{std::regex("\\bfloat\\b"),  eTokenType::t_float}
+        ,{std::regex("\\bdouble\\b"), eTokenType::t_double}
 
         ,{std::regex(R"(\((-?[0-9]+\.[0-9]+)\))"), eTokenType::t_z}
         ,{std::regex(R"(\((-?[0-9]+)\))"),         eTokenType::t_n}
 
         ,{std::regex(";.+"),  eTokenType::t_com}
-        ,{std::regex("\\n+"), eTokenType::t_sep}
+        ,{std::regex("\\n"), eTokenType::t_sep}
         ,{std::regex("(.)"),  eTokenType::t_err} // must be last!
     };
 
@@ -45,7 +49,6 @@ std::vector<Token> Lexer::tokenize(const std::string &input) {
 
     std::string match_on = input;
     while (match_on.length() != 0) {
-        //std::cout << "MATCHING: \"" << match_on << "\"" << std::endl;
         for (const auto &[regex, type] : tokenRegex) {
             std::smatch match;
             if (std::regex_search(match_on, match, regex, std::regex_constants::match_continuous)) {
@@ -98,12 +101,10 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
             comments.push_back(token);
 
         } else if (token.type == t_err) {
-            retErr.push_back({token.line_number,
-                "Unexpected token \""
-                + token.data.value() + "\""});
-
-            comments.push_back({t_com, token.line_number,
-                    "; \"" + token.data.value() + "\"" });
+            auto [tok, com, err] = checkSpelling(token);
+            retTok  .insert(retTok  .end(), tok.begin(), tok.end());
+            retErr  .insert(retErr  .end(), err.begin(), err.end());
+            comments.insert(comments.end(), com.begin(), com.end());
 
         } else if (token.isNullaryOp()) {
             if (can_have_op) can_have_op = false;
@@ -193,3 +194,68 @@ std::optional<SyntaxError>
     return std::nullopt;
 }
 
+std::tuple<std::vector<Token>, std::vector<Token>, std::vector<SyntaxError>>
+
+    checkSpelling(Token token) {
+
+    static const std::vector<std::pair<eTokenType, std::string>> tok = {
+         {t_int8,   "int8"}
+        ,{t_int16,  "int16"}
+        ,{t_int32,  "int32"}
+        ,{t_float,  "float"}
+        ,{t_double, "double"}
+        ,{t_push,   "push "}
+        ,{t_pop,    "pop"}
+        ,{t_dump,   "dump"}
+        ,{t_assert, "assert "}
+        ,{t_add,    "add"}
+        ,{t_sub,    "sub"}
+        ,{t_mul,    "mul"}
+        ,{t_div,    "div"}
+        ,{t_mod,    "mod"}
+        ,{t_print,  "print"}
+        ,{t_exit,   "exit"}
+    };
+
+    auto word        = token.data.value();
+    auto line_number = token.line_number;
+
+    std::vector<SyntaxError> retErr;
+    std::vector<Token>       retTok;
+    std::vector<Token>       retCom;
+
+    bool found = false;
+
+    for (auto &elem : tok) {
+        // Implement levenshtien distance for much better matching!
+        bool isMatch = word.find(elem.second) != std::string::npos;
+        isMatch |=  word.find(elem.second.substr(1, elem.second.size()))
+                                                        != std::string::npos;
+        isMatch |=  word.find(elem.second.substr(0, elem.second.size() - 1))
+                                                        != std::string::npos;
+        if (isMatch) {
+            retTok.push_back({elem.first, line_number});
+            retErr.push_back({
+                    line_number,
+                    "Did you mean \"" + elem.second + "\"? <- <" + word + ">"
+                    });
+            found = true;
+            break;
+        }
+    }
+
+    if (!found) {
+        retErr.push_back({
+                line_number,
+                "Unexpected token \"" + word  + "\""
+                });
+
+        retCom.push_back({
+                t_com,
+                line_number,
+                "; \"" + word + "\""
+                });
+    }
+
+    return {retTok, retCom, retErr};
+}
