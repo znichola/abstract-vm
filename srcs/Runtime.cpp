@@ -26,12 +26,12 @@ const std::vector<Instruction> & Runtime::getByteCode(void) const {
     return _byteCode;
 }
 
-void Runtime::execute() {
+void Runtime::execute(std::ostream &os) {
     while (!_byteCode.empty()) {
         auto inst = _byteCode.front();
 
         if (_logger)
-            std::cout << "EXECUTING " << inst << std::endl;
+            os << "EXECUTING " << inst << std::endl;
         switch (inst.type) {
             case (u_push) :
                 push(inst.arg);
@@ -43,7 +43,7 @@ void Runtime::execute() {
                 pop();
                 break;
             case (n_dump) :
-                dump();
+                os << dump();
                 break;
             case (n_add) :
                 add();
@@ -72,7 +72,7 @@ void Runtime::execute() {
         _byteCode.erase(_byteCode.begin());
     }
     if (_logger)
-        std::cout << "END EXECUTION" << std::endl;
+        os << "END EXECUTION" << std::endl;
 }
 
 std::ostream &operator<<(std::ostream &os, const Runtime& runtime) {

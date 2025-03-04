@@ -34,7 +34,9 @@ public:
     void push(Opr o);
     Opr  pop(void);
 
-    void dump(void) const;
+    std::string dump(void) const;
+    std::string print(void) const;
+
     void assert(Opr o) const;
 
     void add(void);
@@ -43,7 +45,6 @@ public:
     void div(void);
     void mod(void);
 
-    void print(void) const;
 
     void exit(void) const;
 

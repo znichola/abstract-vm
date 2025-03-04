@@ -54,7 +54,7 @@ int main(int ac, char **av) {
     }
 
     try {
-        runtime.execute();
+        runtime.execute(std::cout);
     } catch (std::exception &e) {
         std::cerr << "Runtime error : " << e.what() << std::endl;
     }

@@ -47,11 +47,14 @@ const IOperand * Stack::pop(void) {
     return ret;
 }
 
-void Stack::dump(void) const {
-    auto print = [](const IOperand *o) {
-        std::cout << "" << o->toString() << std::endl;
+std::string Stack::dump(void) const {
+    std::stringstream ss;
+
+    auto print = [&](const IOperand *o) {
+        ss << "" << o->toString() << std::endl;
     };
     std::for_each(_stack.rbegin(), _stack.rend(), print);
+    return ss.str();
 }
 
 void Stack::assert(Opr o) const {
@@ -60,7 +63,7 @@ void Stack::assert(Opr o) const {
         throw std::runtime_error("Assert failed");
 }
 
-void Stack::print(void) const {
+std::string Stack::print(void) const {
     wantToPopThrow();
     Opr o = _stack.back();
     if (o->getType() != eOperandType::e_int8)
@@ -68,7 +71,7 @@ void Stack::print(void) const {
     char c = '#';
     std::stringstream ss(o->toString());
     ss >> c;
-    std::cout << c << std::endl;
+    return std::string(1, c) + "\n";
 }
 
 void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
@@ -80,7 +83,7 @@ void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
     }
     auto rhs = pop();
     Opr res = fn(lhs, rhs);
-    // must handle a throw, to cleanup these variables!
+    // TODO: must handle a throw, to cleanup these variables!
     delete rhs;
     delete lhs;
     push(res);
@@ -107,7 +110,6 @@ void Stack::mod(void) {
 }
 
 void Stack::exit(void) const {
-    //std::cout << "EXIT" << std::endl;
     // TODO : implement the post instruction checking
 }
 

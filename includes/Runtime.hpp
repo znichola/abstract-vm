@@ -24,7 +24,7 @@ public:
 
     void push_back(Instruction instruction);
 
-    void execute();
+    void execute(std::ostream &os);
 
     const std::vector<Instruction> & getByteCode(void) const;
 

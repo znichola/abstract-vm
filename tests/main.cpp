@@ -17,11 +17,13 @@ void record_score();
 void test_lexer_tokenizer();
 void test_lexer_syntax();
 void test_parser();
+void test_runtime();
 
 int main(void) {
     test_lexer_tokenizer();
     test_lexer_syntax();
     test_parser();
+    test_runtime();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num - total_failed << "/" << total_num
@@ -29,6 +31,50 @@ int main(void) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+void compare_runtime(const std::string &expected, const std::string &input) {
+    auto tokens = Lexer::tokenize(input);
+
+    std::stringstream output;
+
+    Runtime runtime;
+
+    try {
+        runtime = Parser::parse(tokens);
+        runtime.execute(output);
+    }
+    catch (std::exception &e) {
+        if (expect(e.what() == expected)) {
+            cout << "Error catch" << endl;
+            cout << "Expected: " << expected << endl;
+            cout << "  Actual: " << e.what() << endl;
+            cout << "  Tokens: " << tokens   << endl;
+        }
+        return ;
+    }
+
+    std::ostringstream oss;
+    oss << runtime;
+    auto actual = oss.str();
+
+    if (expect(actual == expected)) {
+        cout << "Expected: " << expected << endl;
+        cout << "  Actual: " << actual   << endl;
+        cout << "  Tokens: " << tokens   << endl;
+    }
+
+}
+
+void test_runtime() {
+    cout << "Testing the Runtime" << endl;
+
+    compare_runtime("Line 0 | Missing exit before function end"
+            ,"push int8(42)");
+
+    cout << "Runtime tests complete. "
+         << test_num - test_failed << "/" << test_num << endl;
+    record_score();
+}
+
 
 void compare_parser(const std::string &expected, const std::string &input) {
     auto tokens = Lexer::tokenize(input);
