@@ -7,6 +7,7 @@
 # include <optional>
 
 # include "eTokenType.hpp"
+# include "SyntaxError.hpp"
 
 class Token {
 public:
@@ -33,6 +34,9 @@ public:
 
     const std::string &tokenTypeToString(void) const;
     const std::string tokToStr(void) const;
+
+    const std::string genErr(const std::string & msg) const;
+    const SyntaxError genSyxErr(const std::string & msg) const;
 };
 
 

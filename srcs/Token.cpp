@@ -61,9 +61,13 @@ const std::string & Token::tokenTypeToString(void) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Token& token) {
-    os << token.tokenTypeToString();
-    if (token.data.has_value())
-       os << "(" << token.data.value() << ")";
+    if (token.type == t_err) {
+        os << token.data.value();
+    } else {
+        os << token.tokenTypeToString();
+        if (token.data.has_value())
+           os << "(" << token.data.value() << ")";
+    }
     return os;
 }
 
@@ -112,6 +116,19 @@ bool Token::isValue(void) const {
 
 const std::string Token::tokToStr(void) const {
     std::stringstream ss;
-    ss << this;
+    ss << *this;
     return ss.str();
 }
+
+const std::string Token::genErr(const std::string & msg) const {
+    std::stringstream ss;
+    ss << genSyxErr(msg);
+    return ss.str();
+}
+
+const SyntaxError Token::genSyxErr(const std::string & msg) const {
+    std::stringstream ss;
+    ss << msg << " \"" << *this << "\"";
+    return (SyntaxError){line_number, ss.str()};
+}
+

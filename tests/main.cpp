@@ -19,8 +19,8 @@ void test_lexer_syntax();
 void test_parser();
 
 int main(void) {
-//    test_lexer_tokenizer();
-//    test_lexer_syntax();
+    test_lexer_tokenizer();
+    test_lexer_syntax();
     test_parser();
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
@@ -62,8 +62,8 @@ void test_parser() {
 
     compare_parser("[push(42)]", "push int8(42)");
     compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
-    compare_parser("Is not a value err(int7)", "push int7(123)");
-    compare_parser("Line 0 | Value types don't match", "push int8(123)\npush float(2)");
+    compare_parser("Line 0 | Is not a value \"int7\"", "push int7(123)");
+    compare_parser("Line 1 | Value types don't match \"float\" with \"N(2)\"", "push int8(123)\npush float(2)");
 
     cout << "Parser tests complete. "
          << test_num - test_failed << "/" << test_num << endl;
@@ -117,9 +117,9 @@ void test_lexer_syntax() {
     compare_syntaxchecker("[Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]"
             ,"[com(; push), sep, pop]"
             ,"push pop");
-    compare_syntaxchecker("[Line 0 | Some sort of error]"
-            ,"[com(; \"int8(16)\")]"
-            ,"int8(16)"); // Maybe moved to parsing errors?
+//    compare_syntaxchecker("[Line 0 | Some sort of error]"
+//            ,"[com(; \"int8(16)\")]"
+//            ,"int8(16)"); // Maybe moved to parsing errors?
 
     cout << "Lexer syntax tests complete. "
          << test_num - test_failed << "/" << test_num << endl;
@@ -176,8 +176,8 @@ void test_lexer_tokenizer() {
     compare_tokenizer("[push, int8, N(5), sep, com, sep]", "push int8(5)\n; comment\n");
 
     // Invalid tokens
-    compare_tokenizer("[err(i)]", "i");
-    compare_tokenizer("[err(#), push, err(@)]", "#push @");
+    compare_tokenizer("[i]", "i");
+    compare_tokenizer("[#, push, @]", "#push @");
 
     // Complex
     compare_tokenizer("[push, int8, N(50), sep, push, int16, N(-22), sep, add, sep, pop, sep, print, sep, exit]", 

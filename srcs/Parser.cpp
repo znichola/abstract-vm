@@ -1,8 +1,6 @@
 #include "Factory.hpp"
 #include "Parser.hpp"
 
-const std::string errStr(const std::string msg, const Token tok);
-
 Runtime Parser::parse(std::vector<Token> tokens) {
     Runtime rt;
 
@@ -23,7 +21,7 @@ Runtime Parser::parse(std::vector<Token> tokens) {
             continue;
         }
 
-        std::cout << "UNKNOWN TOKEN" << *tok_it << std::endl;
+        std::cout << "UNKNOWN TOKEN : TODO remove!" << *tok_it << std::endl;
     }
 
     (void)rt;
@@ -62,7 +60,7 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
                 );
     }
     std::cout << *tok_it << std::endl;
-    throw std::runtime_error(errStr("Unknown instruction", *tok_it));
+    throw std::runtime_error(tok_it->genErr("Unknown instruction"));
 }
 
 eOperandType operandTypeFromToken(eTokenType tt);
@@ -73,7 +71,7 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
     parseValue(Parser::TokIt tok_it, Parser::TokIt it_end) {
 
     if (!tok_it->isValue()) {
-        throw std::runtime_error(errStr("Is not a value", *tok_it));
+        throw std::runtime_error(tok_it->genErr("Is not a value"));
     }
 
     auto it_p1 = tok_it;
@@ -84,11 +82,13 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
     }
     if (it_p1->type == t_float || it_p1->type == t_double) {
         if (it_p2->type != t_z)
-            throw std::runtime_error(it_p2->line_number + "Value types don't match");
+            throw std::runtime_error(it_p2->genErr("Value types don't match \"" 
+                        + it_p1->tokenTypeToString() + "\" with"));
         else {
             auto o = it_p1->type == t_float ? e_Float : e_Double;
             if (!it_p2->data.has_value())
-                throw std::runtime_error("Critical error");
+                throw std::runtime_error(it_p2->
+                        genErr("Critical: No value with operand"));
             return std::make_pair<Parser::TokIt, Parser::OptVal>(
                         it_p2 + 1,
                         Factory().createOperand(o, it_p2->data.value())
@@ -96,11 +96,13 @@ std::pair<Parser::TokIt, Parser::OptVal> Parser::
         }
     } else {
         if (it_p2->type != t_n)
-            throw std::runtime_error("Value types missmatch");
+            throw std::runtime_error(it_p2->genErr("Value types don't match \"" 
+                        + it_p1->tokenTypeToString() + "\" with"));
         else {
             auto o = operandTypeFromToken(it_p1->type);
             if (!it_p2->data.has_value())
-                throw std::runtime_error("Critical error");
+                throw std::runtime_error(it_p2->
+                        genErr("Critical: No value with operand"));
             return std::make_pair<Parser::TokIt, Parser::OptVal>(
                         it_p2 + 1,
                         Factory().createOperand(o, it_p2->data.value())
@@ -117,9 +119,6 @@ eOperandType operandTypeFromToken(eTokenType tt) {
     if (tt == t_int8) return e_int8;
     if (tt == t_int16) return e_int16;
     if (tt == t_int32) return e_int32;
-    throw std::runtime_error("Unknow operation type token");
+    throw std::runtime_error("Critical: Unknow operation type token");
 }
 
-const std::string errStr(const std::string msg, const Token tok) {
-    return msg + " " + tok.tokToStr();
-}
