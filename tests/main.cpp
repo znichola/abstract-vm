@@ -73,6 +73,10 @@ void test_runtime() {
             ,"push int8(42)");
     compare_runtime("Line 2 | Cannot have instructions after exit"
             ,"push int8(42)\nexit\ndump\ndump");
+    compare_runtime("Line 2 | Div by zero"
+            ,"push int8(0)\npush int8(1)\ndiv\nexit");
+    compare_runtime("Line 2 | Mod by zero"
+            ,"push int8(0)\npush int8(1)\nmod\nexit");
 
 
     cout << "Runtime tests complete. "

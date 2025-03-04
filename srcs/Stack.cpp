@@ -90,8 +90,7 @@ void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
     } catch (std::exception &e) {
         delete rhs;
         delete lhs;
-        std::cout << "Tried div by zero bitch" << std::endl;
-           // throw e;
+        throw;
     }
 }
 

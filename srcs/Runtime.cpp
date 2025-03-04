@@ -41,40 +41,44 @@ void Runtime::execute(std::ostream &os) {
 
         if (_logger)
             os << "EXECUTING " << inst << std::endl;
-        switch (inst.type) {
-            case (u_push) :
-                push(inst.arg);
-                break;
-            case (u_assert) :
-                assert(inst.arg);
-                break;
-            case (n_pop) :
-                pop();
-                break;
-            case (n_dump) :
-                os << dump();
-                break;
-            case (n_add) :
-                add();
-                break;
-            case (n_sub) :
-                sub();
-                break;
-            case (n_mul) :
-                mul();
-                break;
-            case (n_div) :
-                div();
-                break;
-            case (n_mod) :
-                mod();
-                break;
-            case (n_print) :
-                print();
-                break;
-            case (n_exit) :
-                exit();
-                exitRun = true;
+        try {
+            switch (inst.type) {
+                case (u_push) :
+                    push(inst.arg);
+                    break;
+                case (u_assert) :
+                    assert(inst.arg);
+                    break;
+                case (n_pop) :
+                    pop();
+                    break;
+                case (n_dump) :
+                    os << dump();
+                    break;
+                case (n_add) :
+                    add();
+                    break;
+                case (n_sub) :
+                    sub();
+                    break;
+                case (n_mul) :
+                    mul();
+                    break;
+                case (n_div) :
+                    div();
+                    break;
+                case (n_mod) :
+                    mod();
+                    break;
+                case (n_print) :
+                    print();
+                    break;
+                case (n_exit) :
+                    exit();
+                    exitRun = true;
+            }
+        } catch (std::exception & e) {
+            throw std::runtime_error(genErr(inst, e.what()));
         }
         _byteCode.erase(_byteCode.begin());
     }
@@ -105,3 +109,4 @@ std::string genErr(const Instruction & inst, const std::string & msg) {
     ss << "Line " << inst.line_number << " | " << msg;
     return ss.str();
 }
+
