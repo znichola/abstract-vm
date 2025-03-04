@@ -1,3 +1,5 @@
+#include <sstream>
+
 #include "Runtime.hpp"
 
 // Default constructor
@@ -26,9 +28,16 @@ const std::vector<Instruction> & Runtime::getByteCode(void) const {
     return _byteCode;
 }
 
+std::string genErr(const Instruction & inst, const std::string & msg);
+
 void Runtime::execute(std::ostream &os) {
+    bool exitRun = false;
     while (!_byteCode.empty()) {
         auto inst = _byteCode.front();
+
+        if (exitRun)
+            throw std::runtime_error(
+                    genErr(inst, "Cannot have instructions after exit"));
 
         if (_logger)
             os << "EXECUTING " << inst << std::endl;
@@ -64,16 +73,19 @@ void Runtime::execute(std::ostream &os) {
                 print();
                 break;
             case (n_exit) :
-                if (_byteCode.size() > 1)
-                    throw std::runtime_error("Instructions after exit");
                 exit();
-                return;
+                exitRun = true;
         }
         _byteCode.erase(_byteCode.begin());
     }
+
+    if (exitRun == false)
+        throw std::runtime_error("Exit must be called before program end");
+
     if (_logger)
         os << "END EXECUTION" << std::endl;
 }
+
 
 std::ostream &operator<<(std::ostream &os, const Runtime& runtime) {
     os << "[";
@@ -86,4 +98,10 @@ std::ostream &operator<<(std::ostream &os, const Runtime& runtime) {
     }
     os << "]";
     return os;
+}
+
+std::string genErr(const Instruction & inst, const std::string & msg) {
+    std::stringstream ss;
+    ss << "Line " << inst.line_number << " | " << msg;
+    return ss.str();
 }

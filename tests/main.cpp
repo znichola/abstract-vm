@@ -52,13 +52,11 @@ void compare_runtime(const std::string &expected, const std::string &input) {
         return ;
     }
 
-    std::ostringstream oss;
-    oss << runtime;
-    auto actual = oss.str();
+    auto actual = output.str();
 
     if (expect(actual == expected)) {
-        cout << "Expected: " << expected << endl;
-        cout << "  Actual: " << actual   << endl;
+        cout << "Expected: <" << expected << ">" << endl;
+        cout << "  Actual: <" << actual   << ">" << endl;
         cout << "  Tokens: " << tokens   << endl;
     }
 
@@ -67,8 +65,15 @@ void compare_runtime(const std::string &expected, const std::string &input) {
 void test_runtime() {
     cout << "Testing the Runtime" << endl;
 
-    compare_runtime("Line 0 | Missing exit before function end"
+    compare_runtime("42\n42.42\n3341.250000\n"
+            ,"\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
+    compare_runtime("42\n"
+            ,"push int8(12)\npush int8(30)\nadd\ndump\nexit");
+    compare_runtime("Exit must be called before program end"
             ,"push int8(42)");
+    compare_runtime("Line 2 | Cannot have instructions after exit"
+            ,"push int8(42)\nexit\ndump\ndump");
+
 
     cout << "Runtime tests complete. "
          << test_num - test_failed << "/" << test_num << endl;

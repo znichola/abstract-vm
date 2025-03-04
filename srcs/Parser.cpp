@@ -45,7 +45,10 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
     if (tok_it->isNullaryOp()) {
         return std::make_pair(
                 tok_it + 1,
-                (Instruction){InstructionFromToken(tok_it->type)}
+                (Instruction){
+                    InstructionFromToken(tok_it->type),
+                    tok_it->line_number
+                    }
                 );
     }
 
@@ -55,6 +58,7 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
                 res.first,
                 (Instruction){
                     InstructionFromToken(tok_it->type),
+                    tok_it->line_number,
                     res.second.value()
                     }
                 );

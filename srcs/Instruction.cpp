@@ -41,7 +41,7 @@ eInstructionType InstructionFromToken(eTokenType tt) {
     };
 
     auto it = tokInstMap.find(tt);
-    if (it == tokInstMap.end()) throw "error!";
+    if (it == tokInstMap.end()) throw std::runtime_error("Unknown operation!");
     return it->second;
 }
 

@@ -82,11 +82,17 @@ void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
         wantToPopThrow();
     }
     auto rhs = pop();
-    Opr res = fn(lhs, rhs);
-    // TODO: must handle a throw, to cleanup these variables!
-    delete rhs;
-    delete lhs;
-    push(res);
+    try {
+        Opr res = fn(lhs, rhs);
+        delete rhs;
+        delete lhs;
+        push(res);
+    } catch (std::exception &e) {
+        delete rhs;
+        delete lhs;
+        std::cout << "Tried div by zero bitch" << std::endl;
+           // throw e;
+    }
 }
 
 void Stack::add(void) {

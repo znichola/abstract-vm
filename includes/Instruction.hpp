@@ -11,6 +11,7 @@
 
 struct Instruction {
     eInstructionType type;
+    unsigned int     line_number;
     const IOperand * arg = nullptr;
 };
 

@@ -89,6 +89,7 @@ public:
             // TODO: fix this error the toValue is wrong, it should use the 
             // more persise functions conversion, explain below.
             T res = fn(toValue(tmp->toString()), toValue(rhs.toString()));
+            // TODO: above throws so it should be a leak of tmp
             delete tmp;
             return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
             // TODO : it's no longer recursive so the toValue call is with the wrong
@@ -110,7 +111,10 @@ public:
     }
 
     IOperand const * operator/( IOperand const &rhs ) const {
-        return apply([](T a, T b) { return a / b; }, rhs);
+        return apply([](T a, T b) { 
+                if (b == 0) throw std::runtime_error("Div by zero");
+                return a / b;
+                }, rhs);
     }
 
     IOperand const * operator%( IOperand const &rhs ) const {
@@ -118,9 +122,15 @@ public:
                 || getType() == eOperandType::e_Double
                 || rhs.getType() == eOperandType::e_Float
                 || rhs.getType() == eOperandType::e_Double) {
-            return apply([](T a, T b) { return a / b; }, rhs);
+            return apply([](T a, T b) {
+                    if (b == 0) throw std::runtime_error("Mod by zero");
+                    return a / b;
+                    }, rhs);
         }
-        return apply([](T a, T b) { return a / b; }, rhs);
+        return apply([](T a, T b) {
+                if (b == 0) throw std::runtime_error("Mod by zero");
+                return a / b;
+                }, rhs);
     }
 };
 
