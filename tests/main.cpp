@@ -103,11 +103,15 @@ void test_runtime() {
             ,"push int16(32)\npush float(0.1)\nmul\ndump\nassert float(3.2)\nexit");
 
     cout << "\nTypes and casting\n";
+    compare_runtime("Line 0 | Overflow value"
+            ,"push int8(256)\nexit");
+    compare_runtime("Line 0 | Overflow value"
+            ,"push int8(-256)\nexit");
 //    compare_runtime("foo"
 //            ,"push int8(");
 
 
-    cout << "Runtime tests complete. "
+    cout << "Runtime tests complete."
          << test_num - test_failed << "/" << test_num << endl;
     record_score();
 }

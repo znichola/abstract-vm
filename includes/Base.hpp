@@ -21,7 +21,52 @@ public:
 // Default constructor
     Base() : _value("") {}
 
-    Base(std::string v) : _value(v) {
+    Base(std::string v) {
+        if (v == "") return ;
+        if constexpr (std::is_same<T, float>() || std::is_same<T, double>()) {
+            double tmp;
+            std::stringstream ss(v);
+            ss >> tmp;
+            if (ss.fail())
+                throw std::runtime_error(
+                        "Failed string to value converstion <" + v + ">");
+            if (tmp < std::numeric_limits<T>::lowest()) {
+                std::stringstream ss2;
+                ss2 << "Underflow value "
+                    << std::numeric_limits<T>::lowest();
+                throw std::runtime_error(ss2.str());
+            }
+            if (tmp > std::numeric_limits<T>::max()) {
+                std::stringstream ss2;
+                ss2 << "Overflow value "
+                    << std::numeric_limits<T>::lowest();
+                throw std::runtime_error(ss2.str());
+            }
+            _value = ss.str();
+        } else {
+            long long tmp;
+            std::stringstream ss(v);
+            ss >> tmp;
+            if (ss.fail())
+                throw std::runtime_error(
+                        "Failed string to value converstion <" + v + ">");
+            if (tmp < std::numeric_limits<T>::lowest()) {
+                std::stringstream ss2;
+                ss2 << "Underflow value "
+                    << std::numeric_limits<T>::lowest();
+                throw std::runtime_error(ss2.str());
+            }
+            if (tmp > std::numeric_limits<T>::max()) {
+                std::stringstream ss2;
+                std::cout << std::numeric_limits<T>::lowest() << "FAAAA\n";
+                std::cout << INT8_MIN << "FAAAA\n";
+                std::cout << std::numeric_limits<T>::max() << "FAAAA\n";
+                ss2 << "Overflow value "
+                    << std::numeric_limits<T>::max();
+                throw std::runtime_error(ss2.str());
+            }
+            _value = ss.str();
+        }
         // TODO : this should throw after createing if it's an overflow value!
     }
 
@@ -37,8 +82,8 @@ public:
 // Copy assignment operator
     Base &operator=(const Base &other) {
     _value = other._value;
-	return *this;
-}
+    return *this;
+    }
 
 // Methods
     eOperandType getType(void) const {
@@ -69,15 +114,16 @@ public:
             std::stringstream ss(s);
             ss >> v;
 
-            if (ss.fail()) {} // TODO : add error handelling for parsing error
-            // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
+            if (ss.fail())
+                throw std::runtime_error("Error parsing value");
             return v;
         } else {
             T v = 0;
             std::stringstream ss(s);
             ss >> v;
 
-            if (ss.fail()) {} // TODO : add error handelling for parsing error
+            if (ss.fail())
+                throw std::runtime_error("Error parsing value");
             return v;
         }
     }
