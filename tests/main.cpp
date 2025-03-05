@@ -65,7 +65,7 @@ void compare_runtime(const std::string &expected, const std::string &input) {
 void test_runtime() {
     cout << "Testing the Runtime" << endl;
 
-    compare_runtime("42\n42.42\n3341.250000\n"
+    compare_runtime("42\n42.42\n3341.25\n"
             ,"\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
     compare_runtime("42\n"
             ,"push int8(12)\npush int8(30)\nadd\ndump\nexit");
@@ -99,7 +99,7 @@ void test_runtime() {
     cout << "\nPromoting precision\n";
     compare_runtime("3.2\n"
             ,"push float(0.1)\npush int16(32)\nmul\ndump\nassert float(3.2)\nexit");
-    compare_runtime("3.2"
+    compare_runtime("3.2\n"
             ,"push int16(32)\npush float(0.1)\nmul\ndump\nassert float(3.2)\nexit");
 
     cout << "\nTypes and casting\n";

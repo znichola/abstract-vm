@@ -11,7 +11,7 @@
 
 # include "IOperand.hpp"
 # include "Factory.hpp"
-# include "toValue.hpp"
+//# include "toValue.hpp"
 
 template <typename T>
 class Base: public IOperand {
@@ -63,7 +63,7 @@ public:
         return _value;
     }
 
-    T toValue(eOperantType t, const std::string &s) const {
+    T toValue(const std::string &s) const {
         if constexpr (std::is_same<T, int8_t>()) {
             std::int16_t v = 0;
             std::stringstream ss(s);
@@ -87,50 +87,47 @@ public:
     IOperand const * apply(std::function<T(T, T)> fn, IOperand const &rhs) const {
         if (getPrecision() >= rhs.getPrecision()) {
             T res = fn(toValue(_value), toValue(rhs.toString()));
-
             if constexpr (std::is_same<T, int8_t>()) {
                 return Factory().createOperand(getType(), std::to_string(static_cast<T>(res)));
             } else {
                 std::ostringstream oss;
-                oss << std::fixed << std::setprecision(1) << res;
+                oss << res;
                 return Factory().createOperand(getType(), oss.str());
             }
         } else {
-            IOperand const *tmp = Factory().createOperand(rhs.getType(), toString());
-            // TODO: fix this error the toValue is wrong, it should use the 
-            // more persise functions conversion, explain below.
-            T res = fn(toValue(tmp->toString()), toValue(rhs.toString()));
-            // TODO: above throws so it should be a leak of tmp
-            delete tmp;
-
-            if constexpr (std::is_same<T, int8_t>()) {
-                return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
-            } else {
-                std::ostringstream oss;
-                oss << std::fixed << std::setprecision(1) << res;
-                return Factory().createOperand(rhs.getType(), oss.str());
-            }
-
-            //return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
-            // TODO : it's no longer recursive so the toValue call is with the wrong
-            // type here, it should be with the tmp toValue, but ther stupid interface
-            // does not allow for it. Might need to rethink this a bit.
+            throw std::runtime_error("Presision upscale error");
         }
     }
 
     IOperand const * operator+( IOperand const &rhs ) const {
+        if (getPrecision() < rhs.getPrecision()) {
+            std::unique_ptr<IOperand const> tmp(Factory().createOperand(rhs.getType(), toString()));
+            return *tmp + rhs;
+        }
         return apply([](T a, T b) { return a + b; }, rhs);
     }
 
     IOperand const * operator-( IOperand const &rhs ) const {
+        if (getPrecision() < rhs.getPrecision()) {
+            std::unique_ptr<IOperand const> tmp(Factory().createOperand(rhs.getType(), toString()));
+            return *tmp - rhs;
+        }
         return apply([](T a, T b) { return a - b; }, rhs);
     }
 
     IOperand const * operator*( IOperand const &rhs ) const {
+        if (getPrecision() < rhs.getPrecision()) {
+            std::unique_ptr<IOperand const> tmp(Factory().createOperand(rhs.getType(), toString()));
+            return *tmp * rhs;
+        }
         return apply([](T a, T b) { return a * b; }, rhs);
     }
 
     IOperand const * operator/( IOperand const &rhs ) const {
+        if (getPrecision() < rhs.getPrecision()) {
+            std::unique_ptr<IOperand const> tmp(Factory().createOperand(rhs.getType(), toString()));
+            return *tmp / rhs;
+        }
         return apply([](T a, T b) { 
                 if (b == 0) throw std::runtime_error("Div by zero");
                 return a / b;
@@ -138,6 +135,10 @@ public:
     }
 
     IOperand const * operator%( IOperand const &rhs ) const {
+        if (getPrecision() < rhs.getPrecision()) {
+            std::unique_ptr<IOperand const> tmp(Factory().createOperand(rhs.getType(), toString()));
+            return *tmp % rhs;
+        }
         if (getType() == eOperandType::e_Float
                 || getType() == eOperandType::e_Double
                 || rhs.getType() == eOperandType::e_Float
