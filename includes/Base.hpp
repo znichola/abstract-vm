@@ -11,6 +11,7 @@
 
 # include "IOperand.hpp"
 # include "Factory.hpp"
+# include "toValue.hpp"
 
 template <typename T>
 class Base: public IOperand {
@@ -20,7 +21,9 @@ public:
 // Default constructor
     Base() : _value("") {}
 
-    Base(std::string v) : _value(v) {}
+    Base(std::string v) : _value(v) {
+        // TODO : this should throw after createing if it's an overflow value!
+    }
 
 // Copy constructor
     Base(const Base &other) {
@@ -60,14 +63,14 @@ public:
         return _value;
     }
 
-    T toValue(const std::string &s) const {
+    T toValue(eOperantType t, const std::string &s) const {
         if constexpr (std::is_same<T, int8_t>()) {
             std::int16_t v = 0;
             std::stringstream ss(s);
             ss >> v;
 
             if (ss.fail()) {} // TODO : add error handelling for parsing error
-                              // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
+            // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
             return v;
         } else {
             T v = 0;

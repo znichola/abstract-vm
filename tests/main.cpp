@@ -91,6 +91,20 @@ void test_runtime() {
             ,"push int16(12)\npush int32(10)\nsub\nassert int32(2)\ndump\nexit\n");
     compare_runtime("5.0\n"
             ,"push float(0.5)\npush int16(10)\nmul\nassert float(5.0)\ndump\nexit");
+    compare_runtime(""
+            ,"push int32(9)\npush int16(9)\nadd\nassert int32(18)\nexit");
+    compare_runtime(""
+            ,"push int16(9)\npush int32(9)\nadd\nassert int32(18)\nexit");
+
+    cout << "\nPromoting precision\n";
+    compare_runtime("3.2\n"
+            ,"push float(0.1)\npush int16(32)\nmul\ndump\nassert float(3.2)\nexit");
+    compare_runtime("3.2"
+            ,"push int16(32)\npush float(0.1)\nmul\ndump\nassert float(3.2)\nexit");
+
+    cout << "\nTypes and casting\n";
+//    compare_runtime("foo"
+//            ,"push int8(");
 
 
     cout << "Runtime tests complete. "
@@ -139,7 +153,7 @@ void test_parser() {
     compare_parser("Line 0 | Value types don't match \"int8\" with \"Z(123.3)\"", "push int8(123.3)");
     compare_parser("Line 0 | Value types don't match \"float\" with \"N(123)\"", "assert float(123)");
     compare_parser("Line 4 | Not enough to construct value for \"push\"", "\n\n\n\npush 3");
-    compare_parser("todo", "push");
+    //compare_parser("TODO", "don't remember what the case I wanted to add here");
 
     cout << "Parser tests complete. "
          << test_num - test_failed << "/" << test_num << endl;

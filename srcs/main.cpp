@@ -37,7 +37,7 @@ int main(int ac, char **av) {
     auto cleanedTokens = s.first;
 
     if (syntaxErrors.size() != 0) {
-        std::cout << "Syntax error :" << std::endl;
+        std::cout << "Syntax Error/s :" << std::endl;
         auto print = [](const SyntaxError s) {
             std::cout << s << std::endl;
         };
@@ -50,13 +50,13 @@ int main(int ac, char **av) {
     try {
         runtime = Parser::parse(cleanedTokens);
     } catch (std::exception &e) {
-        std::cerr << "Parsing error : " << e.what() << std::endl;
+        std::cerr << "Parsing Error : " << e.what() << std::endl;
     }
 
     try {
         runtime.execute(std::cout);
     } catch (std::exception &e) {
-        std::cerr << "Runtime error : " << e.what() << std::endl;
+        std::cerr << "Runtime Error : " << e.what() << std::endl;
     }
 
 
