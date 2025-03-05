@@ -7,6 +7,7 @@
 # include <cstdint>
 # include <functional>
 # include <cmath>
+# include <iomanip>
 
 # include "IOperand.hpp"
 # include "Factory.hpp"
@@ -60,30 +61,37 @@ public:
     }
 
     T toValue(const std::string &s) const {
-        if (getType() == eOperandType::e_int8) {
+        if constexpr (std::is_same<T, int8_t>()) {
             std::int16_t v = 0;
             std::stringstream ss(s);
             ss >> v;
 
             if (ss.fail()) {} // TODO : add error handelling for parsing error
-           // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
+                              // std::cout << "string:" << s <<  " rest of string:" << s << " toValue: " << std::to_string(static_cast<std::int8_t>(v)) <<std::endl;
+            return v;
+        } else {
+            T v = 0;
+            std::stringstream ss(s);
+            ss >> v;
+
+            if (ss.fail()) {} // TODO : add error handelling for parsing error
             return v;
         }
-
-        T v = 0;
-        std::stringstream ss(s);
-        ss >> v;
-
-        if (ss.fail()) {} // TODO : add error handelling for parsing error
-        return v;
-}
+    }
 
     // Operators
 
     IOperand const * apply(std::function<T(T, T)> fn, IOperand const &rhs) const {
         if (getPrecision() >= rhs.getPrecision()) {
             T res = fn(toValue(_value), toValue(rhs.toString()));
-            return Factory().createOperand(getType(), std::to_string(static_cast<T>(res))); // use the facotry for this
+
+            if constexpr (std::is_same<T, int8_t>()) {
+                return Factory().createOperand(getType(), std::to_string(static_cast<T>(res)));
+            } else {
+                std::ostringstream oss;
+                oss << std::fixed << std::setprecision(1) << res;
+                return Factory().createOperand(getType(), oss.str());
+            }
         } else {
             IOperand const *tmp = Factory().createOperand(rhs.getType(), toString());
             // TODO: fix this error the toValue is wrong, it should use the 
@@ -91,7 +99,16 @@ public:
             T res = fn(toValue(tmp->toString()), toValue(rhs.toString()));
             // TODO: above throws so it should be a leak of tmp
             delete tmp;
-            return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
+
+            if constexpr (std::is_same<T, int8_t>()) {
+                return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
+            } else {
+                std::ostringstream oss;
+                oss << std::fixed << std::setprecision(1) << res;
+                return Factory().createOperand(rhs.getType(), oss.str());
+            }
+
+            //return Factory().createOperand(rhs.getType(), std::to_string(static_cast<T>(res)));
             // TODO : it's no longer recursive so the toValue call is with the wrong
             // type here, it should be with the tmp toValue, but ther stupid interface
             // does not allow for it. Might need to rethink this a bit.

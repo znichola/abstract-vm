@@ -74,11 +74,23 @@ void test_runtime() {
     compare_runtime("Line 2 | Cannot have instructions after exit"
             ,"push int8(42)\nexit\ndump\ndump");
     compare_runtime("Line 2 | Div by zero"
-            ,"push int8(0)\npush int8(1)\ndiv\nexit");
+            ,"push int8(1)\npush int8(0)\ndiv\nexit");
     compare_runtime("Line 2 | Mod by zero"
-            ,"push int8(0)\npush int8(1)\nmod\nexit");
-    compare_runtime("Line 2 | Assert failed TODO"
+            ,"push int8(1)\npush int8(0)\nmod\nexit");
+    compare_runtime("Line 1 | Assert failed int8(0) != int8(1)"
             ,"push int8(0)\nassert int8(1)\nexit");
+    compare_runtime("Line 1 | Assert failed float(0.0) != int8(0)"
+            ,"push float(0.0)\nassert int8(0)\nexit");
+    compare_runtime("8\n"
+            ,"push int8(4)\npush int16(4)\nadd\nassert int16(8)\ndump\nexit\n");
+    compare_runtime("-5\n"
+            ,"push int8(4)\npush int16(9)\nsub\nassert int16(-5)\ndump\nexit\n");
+    compare_runtime("2\n"
+            ,"push int8(12)\npush int16(10)\nsub\nassert int16(2)\ndump\nexit\n");
+    compare_runtime("2\n"
+            ,"push int16(12)\npush int32(10)\nsub\nassert int32(2)\ndump\nexit\n");
+    compare_runtime("5.0\n"
+            ,"push float(0.5)\npush int16(10)\nmul\nassert float(5.0)\ndump\nexit");
 
 
     cout << "Runtime tests complete. "

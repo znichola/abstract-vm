@@ -24,5 +24,6 @@ public:
 };
 
 std::ostream &operator<<(std::ostream &os, const IOperand *op);
+std::string toTypeString(const IOperand *op);
 
 #endif /* IOPERAND_HPP */

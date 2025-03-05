@@ -59,8 +59,14 @@ std::string Stack::dump(void) const {
 
 void Stack::assert(Opr o) const {
     wantToPopThrow();
-    if (_stack.back()->toString() != o->toString())
-        throw std::runtime_error("Assert failed");
+    if (_stack.back()->toString() != o->toString()
+          || _stack.back()->getType() != o->getType()) {
+        std::stringstream ss;
+        ss << toTypeString(_stack.back())
+           << " != "
+           << toTypeString(o);
+        throw std::runtime_error("Assert failed " + ss.str());
+    }
 }
 
 std::string Stack::print(void) const {
@@ -76,12 +82,12 @@ std::string Stack::print(void) const {
 
 void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
     wantToPopThrow();
-    auto lhs = pop();
+    auto rhs = pop();
     if (!wantToPop()) {
-        delete lhs;
+        delete rhs;
         wantToPopThrow();
     }
-    auto rhs = pop();
+    auto lhs = pop();
     try {
         Opr res = fn(lhs, rhs);
         delete rhs;
