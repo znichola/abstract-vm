@@ -62,7 +62,9 @@ tests/unit	: $(OBJS) $(TEST_MAIN_OBJ)
 u	: tests/unit
 	./tests/unit
 
-rt	: re t
+ru	: fclean u
+
+rt	: fclean t
 
 leaks : re
 	$(LEAKS_CHECK) ./$(NAME)

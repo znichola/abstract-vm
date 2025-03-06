@@ -42,8 +42,18 @@ public:
                     << std::numeric_limits<T>::lowest();
                 throw std::runtime_error(ss2.str());
             }
-            _value = ss.str();
-            if (_value.find(".") == std::string::npos) _value += ".0";
+            std::stringstream ss2;
+            ss2 << std::fixed;
+            ss2 << std::setprecision(10);
+            ss2 << tmp;
+            auto t = ss2.str();
+            auto tpos = t.find_last_not_of("0");
+            if (t[tpos] == '.') t.erase(tpos + 2, std::string::npos);
+            else t.erase(tpos + 1, std::string::npos);
+            std::cout << "TMP " << t << std::endl;
+            _value = t;
+
+            //if (_value.find(".") == std::string::npos) _value += ".0";
         } else {
             long long tmp;
             std::stringstream ss(v);

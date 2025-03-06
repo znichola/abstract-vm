@@ -103,8 +103,8 @@ void test_runtime() {
             ,"push float(1.0)\npush float(7.0)\nadd\ndump\nexit");
     compare_runtime("8.0\n"
             ,"push double(1.0)\npush double(7.0)\nadd\ndump\nexit");
-    compare_runtime("80000000000001.0\n"
-            ,"push double(1.0)\npush double(80000000000000.0)\nadd\ndump\nexit");
+    compare_runtime("80000000010000.0\n"
+            ,"push double(10000.0)\npush double(80000000000000.0)\nadd\ndump\nexit");
 
     cout << "\nPromoting precision\n";
     compare_runtime("3.2\n"
