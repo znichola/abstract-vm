@@ -77,6 +77,8 @@ void test_runtime() {
             ,"push int8(1)\npush int8(0)\ndiv\nexit");
     compare_runtime("Line 2 | Mod by zero"
             ,"push int8(1)\npush int8(0)\nmod\nexit");
+
+    cout << "\nAssertions & value types\n";
     compare_runtime("Line 1 | Assert failed int8(0) != int8(1)"
             ,"push int8(0)\nassert int8(1)\nexit");
     compare_runtime("Line 1 | Assert failed float(0.0) != int8(0)"
@@ -95,6 +97,14 @@ void test_runtime() {
             ,"push int32(9)\npush int16(9)\nadd\nassert int32(18)\nexit");
     compare_runtime(""
             ,"push int16(9)\npush int32(9)\nadd\nassert int32(18)\nexit");
+    compare_runtime("6.28\n3.14\n"
+            ,"push float(3.14)\npush double(6.28)\ndump\nexit");
+    compare_runtime("8.0\n"
+            ,"push float(1.0)\npush float(7.0)\nadd\ndump\nexit");
+    compare_runtime("8.0\n"
+            ,"push double(1.0)\npush double(7.0)\nadd\ndump\nexit");
+    compare_runtime("80000000000001.0\n"
+            ,"push double(1.0)\npush double(80000000000000.0)\nadd\ndump\nexit");
 
     cout << "\nPromoting precision\n";
     compare_runtime("3.2\n"

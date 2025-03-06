@@ -22,7 +22,7 @@ public:
     Base() : _value("") {}
 
     Base(std::string v) {
-        if (v == "") return ;
+        if (v == "") return ; //TODO test removing this to see if tests break
         if constexpr (std::is_same<T, float>() || std::is_same<T, double>()) {
             double tmp;
             std::stringstream ss(v);
@@ -43,6 +43,7 @@ public:
                 throw std::runtime_error(ss2.str());
             }
             _value = ss.str();
+            if (_value.find(".") == std::string::npos) _value += ".0";
         } else {
             long long tmp;
             std::stringstream ss(v);
