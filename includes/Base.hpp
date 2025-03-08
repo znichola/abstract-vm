@@ -23,62 +23,58 @@ public:
 
     Base(std::string v) {
         if (v == "") return ; //TODO test removing this to see if tests break
+        std::stringstream sserr;
+        std::stringstream ss(v);
         if constexpr (std::is_same<T, float>() || std::is_same<T, double>()) {
             double tmp;
-            std::stringstream ss(v);
             ss >> tmp;
             if (ss.fail())
                 throw std::runtime_error(
                         "Failed string to value converstion <" + v + ">");
             if (tmp < std::numeric_limits<T>::lowest()) {
-                std::stringstream ss2;
-                ss2 << "Underflow value "
-                    << std::numeric_limits<T>::lowest();
-                throw std::runtime_error(ss2.str());
+                sserr << "Underflow value " << std::numeric_limits<T>::lowest();
+                throw std::runtime_error(sserr.str());
             }
             if (tmp > std::numeric_limits<T>::max()) {
-                std::stringstream ss2;
-                ss2 << "Overflow value "
-                    << std::numeric_limits<T>::lowest();
-                throw std::runtime_error(ss2.str());
+                sserr << "Overflow value " << std::numeric_limits<T>::max();
+                throw std::runtime_error(sserr.str());
             }
             std::stringstream ss2;
-            ss2 << std::fixed;
-            ss2 << std::setprecision(10);
-            ss2 << tmp;
+            ss2 << std::fixed << std::setprecision(10) << tmp;
             auto t = ss2.str();
+            // std::cout << "HERE DOUBLE FLOAT :" << v << ": and : " << t << ":\n";
             auto tpos = t.find_last_not_of("0");
             if (t[tpos] == '.') t.erase(tpos + 2, std::string::npos);
             else t.erase(tpos + 1, std::string::npos);
-            std::cout << "TMP " << t << std::endl;
+            // std::cout << "    POST DELETE T :" << v << ": and : " << t << ":\n";
             _value = t;
-
-            //if (_value.find(".") == std::string::npos) _value += ".0";
         } else {
             long long tmp;
-            std::stringstream ss(v);
             ss >> tmp;
             if (ss.fail())
                 throw std::runtime_error(
                         "Failed string to value converstion <" + v + ">");
-            if (tmp < std::numeric_limits<T>::lowest()) {
-                std::stringstream ss2;
-                ss2 << "Underflow value "
-                    << std::numeric_limits<T>::lowest();
-                throw std::runtime_error(ss2.str());
-            }
-            if (tmp > std::numeric_limits<T>::max()) {
-                std::stringstream ss2;
-                std::cout << std::numeric_limits<T>::lowest() << "FAAAA\n";
-                std::cout << INT8_MIN << "FAAAA\n";
-                std::cout << std::numeric_limits<T>::max() << "FAAAA\n";
-                ss2 << "Overflow value "
-                    << std::numeric_limits<T>::max();
-                throw std::runtime_error(ss2.str());
+            if constexpr (std::is_same<T, int8_t>()) {
+                if (tmp < INT8_MIN) {
+                    sserr << "Underflow value " << INT8_MIN;
+                    throw std::runtime_error(sserr.str());
+                }
+                if (tmp > INT8_MAX) {
+                    sserr << "Overflow value " << INT8_MAX;
+                    throw std::runtime_error(sserr.str());
+                }
+            } else {
+                if (tmp < std::numeric_limits<T>::lowest()) {
+                    sserr << "Underflow value " << std::numeric_limits<T>::lowest();
+                    throw std::runtime_error(sserr.str());
+                }
+                if (tmp > std::numeric_limits<T>::max()) {
+                    sserr << "Overflow value " << std::numeric_limits<T>::max();
+                    throw std::runtime_error(sserr.str());
+                }
             }
             _value = ss.str();
         }
-        // TODO : this should throw after createing if it's an overflow value!
     }
 
 // Copy constructor
@@ -148,6 +144,7 @@ public:
                 return Factory().createOperand(getType(), std::to_string(static_cast<T>(res)));
             } else {
                 std::ostringstream oss;
+                oss << std::setprecision(10);
                 oss << res;
                 return Factory().createOperand(getType(), oss.str());
             }

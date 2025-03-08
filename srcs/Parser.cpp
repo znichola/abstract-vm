@@ -6,21 +6,27 @@ Runtime Parser::parse(std::vector<Token> tokens) {
 
     TokIt tok_it = tokens.begin();
 
-    while (tok_it != tokens.end()) {
-        auto err = parseSkipTokens(tok_it);
-        if (err.has_value()) {
-            tok_it = err.value();
-            continue;
-        }
+    try {
+        while (tok_it != tokens.end()) {
+            auto err = parseSkipTokens(tok_it);
+            if (err.has_value()) {
+                tok_it = err.value();
+                continue;
+            }
 
-        auto inst = parseInstruction(tok_it, tokens.end());
-        if (inst.second.has_value()) {
-            rt.push_back(inst.second.value());
-            tok_it = inst.first;
-            continue;
+            auto inst = parseInstruction(tok_it, tokens.end());
+            if (inst.second.has_value()) {
+                rt.push_back(inst.second.value());
+                tok_it = inst.first;
+                continue;
+            }
+            throw std::runtime_error(tok_it->genErr("Unknown token, with"));
         }
-
-        std::cout << "UNKNOWN TOKEN : TODO remove!" << *tok_it << std::endl;
+    } catch (std::exception & e) {
+        std::string se(e.what());
+        if (se.find("Line") == std::string::npos) 
+            throw std::runtime_error(tok_it->genErr(se + ", with"));
+        throw;
     }
 
     (void)rt;
@@ -63,8 +69,9 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
                     }
                 );
     }
-    std::cout << *tok_it << std::endl;
-    throw std::runtime_error(tok_it->genErr("Unknown instruction"));
+    //std::cout << *tok_it << std::endl;
+    //throw std::runtime_error(tok_it->genErr("Unknown instruction"));
+    return {tok_it, std::nullopt};
 }
 
 eOperandType operandTypeFromToken(eTokenType tt);

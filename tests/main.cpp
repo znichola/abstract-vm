@@ -63,10 +63,16 @@ void compare_runtime(const std::string &expected, const std::string &input) {
 }
 
 void test_runtime() {
-    cout << "Testing the Runtime" << endl;
+    cout << "\nTesting the Runtime" << endl;
 
+    // examples from doc
     compare_runtime("42\n42.42\n3341.25\n"
             ,"\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
+    compare_runtime("5\n"
+            ,"push int32(2)\npush int32(3)\nadd\nassert int32(5)\ndump\nexit\n");
+    compare_runtime("Line 0 | Can't pop empty stack"
+            ,"pop\n");
+
     compare_runtime("42\n"
             ,"push int8(12)\npush int8(30)\nadd\ndump\nexit");
     compare_runtime("Exit must be called before program end"
@@ -78,7 +84,7 @@ void test_runtime() {
     compare_runtime("Line 2 | Mod by zero"
             ,"push int8(1)\npush int8(0)\nmod\nexit");
 
-    cout << "\nAssertions & value types\n";
+    cout << "Assertions & value types\n";
     compare_runtime("Line 1 | Assert failed int8(0) != int8(1)"
             ,"push int8(0)\nassert int8(1)\nexit");
     compare_runtime("Line 1 | Assert failed float(0.0) != int8(0)"
@@ -103,23 +109,38 @@ void test_runtime() {
             ,"push float(1.0)\npush float(7.0)\nadd\ndump\nexit");
     compare_runtime("8.0\n"
             ,"push double(1.0)\npush double(7.0)\nadd\ndump\nexit");
-    compare_runtime("80000000010000.0\n"
-            ,"push double(10000.0)\npush double(80000000000000.0)\nadd\ndump\nexit");
+    compare_runtime("800000001.0\n"
+            ,"push double(1.0)\npush double(800000000.0)\nadd\ndump\nexit");
+    compare_runtime("123456789.099999994\n"
+            ,"push double(0.0)\npush double(123456789.123456789)\nadd\ndump\nexit");
 
-    cout << "\nPromoting precision\n";
-    compare_runtime("3.2\n"
-            ,"push float(0.1)\npush int16(32)\nmul\ndump\nassert float(3.2)\nexit");
-    compare_runtime("3.2\n"
-            ,"push int16(32)\npush float(0.1)\nmul\ndump\nassert float(3.2)\nexit");
+    cout << "Promoting precision\n";
+    compare_runtime("3.200000048\n"
+            ,"push float(0.1)\npush int16(32)\nmul\ndump\nassert float(3.200000048)\nexit");
+    compare_runtime("3.200000048\n"
+            ,"push int16(32)\npush float(0.1)\nmul\ndump\nassert float(3.200000048)\nexit");
+    compare_runtime("2\n"
+            ,"push int8(1)\npush int16(2)\nmul\ndump\nassert int16(2)\nexit");
+    compare_runtime("2.0\n"
+            ,"push int32(1)\npush float(2.0)\nmul\ndump\nassert float(2.0)\nexit");
+    compare_runtime("2.0\n"
+            ,"push double(1.0)\npush float(2.0)\nmul\ndump\nassert double(2.0)\nexit");
 
-    cout << "\nTypes and casting\n";
-    compare_runtime("Line 0 | Overflow value"
+    cout << "Types and casting\n";
+    compare_runtime("Line 0 | Overflow value 127, with \"push\""
             ,"push int8(256)\nexit");
-    compare_runtime("Line 0 | Overflow value"
+    compare_runtime("Line 0 | Underflow value -128, with \"push\""
             ,"push int8(-256)\nexit");
-//    compare_runtime("foo"
-//            ,"push int8(");
 
+    compare_runtime("Line 1 | Overflow value 32767, with \"assert\""
+            ,"spush int16(2)\nassert int16(2500006)\nexit");
+    compare_runtime("Line 1 | Underflow value -32768, with \"assert\""
+            ,"push int16(2)\nassert int16(-2500006)\nexit");
+
+    compare_runtime("Line 1 | Overflow value 2147483647, with \"assert\""
+            ,"spush int32(2)\nassert int32(2500000000006)\nexit");
+    compare_runtime("Line 1 | Underflow value -2147483648, with \"assert\""
+            ,"push int32(2)\nassert int32(-2500000000006)\nexit");
 
     cout << "Runtime tests complete."
          << test_num - test_failed << "/" << test_num << endl;
@@ -156,7 +177,7 @@ void compare_parser(const std::string &expected, const std::string &input) {
 }
 
 void test_parser() {
-    cout << "Testing the Parser" << endl;
+    cout << "\nTesting the Parser" << endl;
 
     compare_parser("[push(42)]", "push int8(42)");
     compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
@@ -206,7 +227,7 @@ void compare_syntaxchecker(const std::string &expectedErrors,
 }
 
 void test_lexer_syntax() {
-    cout << "Testing the Syntax checker" << endl;
+    cout << "\nTesting the Syntax checker" << endl;
 
     compare_syntaxchecker("[]","[push, int8, N(12)]", "push int8(12)");
     compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"]"
@@ -258,7 +279,7 @@ void compare_tokenizer(const std::string &expected, const std::string &input) {
 
 
 void test_lexer_tokenizer() {
-    cout << "Testing the Lexer" << endl;
+    cout << "\nTesting the Lexer" << endl;
 
     // Math ops
     compare_tokenizer("[add]", "add");
