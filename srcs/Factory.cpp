@@ -17,6 +17,10 @@ IOperand const * Factory::createOperand( eOperandType type, std::string const & 
     return (this->*mfs[type])(value);
 }
 
+IOperand const * Factory::dup(IOperand const *o) const {
+    return createOperand(o->getType(), o->toString());
+}
+
 IOperand const * Factory::createInt8( std::string const & value ) const {
     return new Base<int8_t>(value);
 }

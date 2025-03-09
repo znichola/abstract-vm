@@ -20,6 +20,8 @@ Runtime.execute(out_stream) -> result in out_stream {Throw error}
 
 ## TODO
 
+- Fix leak, it's to do with IOperand and copy constructors, I need to ensure, the `_stack` and the `_byteCode` propery copies / makes new Operand objects.
+
 ## Stream of thoughts about Parsing vs Lexer/Tokenizer split
 
 > _:warning: These are just misalenious thoughts during dev and where not updated after the fact._

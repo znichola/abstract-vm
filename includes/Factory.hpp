@@ -16,6 +16,7 @@ private:
 
 public:
     IOperand const * createOperand( eOperandType type, std::string const & value ) const;
+    IOperand const * dup(IOperand const *o) const;
 };
 
 #endif /* FACTORY_HPP */

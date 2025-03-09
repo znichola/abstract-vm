@@ -4,6 +4,7 @@
 #include <sstream>
 
 #include "Stack.hpp"
+#include "Factory.hpp"
 
 //using Opr = const IOperand *;
 
@@ -12,7 +13,7 @@ Stack::Stack() {}
 
 // Copy constructor
 Stack::Stack(const Stack &other) {
-	*this = other;
+    *this = other;
 }
 
 // Destructor
@@ -23,8 +24,10 @@ Stack::~Stack() {
 
 // Copy assignment operator
 Stack &Stack::operator=(const Stack &other) {
-    _stack = other._stack;
-	return *this;
+    for (const auto & o : other._stack) {
+        _stack.push_back(Factory().dup(o));
+    }
+    return *this;
 }
 
 bool Stack::wantToPop(void) const {

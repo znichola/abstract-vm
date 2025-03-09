@@ -14,7 +14,7 @@ Runtime::Runtime(const Runtime &other) : Stack(other) {
 // Destructor
 Runtime::~Runtime() {
     auto remove = [](Instruction i) {
-        if (i.arg)
+        if (i.arg != nullptr)
             delete i.arg;
     };
     std::for_each(_byteCode.begin(), _byteCode.end(), remove);
@@ -22,7 +22,13 @@ Runtime::~Runtime() {
 
 // Copy assignment operator
 Runtime &Runtime::operator=(const Runtime &other) {
-    _byteCode = other._byteCode;
+    for (const auto & i : other._byteCode) {
+        auto copy = i;
+        if (copy.arg) {
+            copy.arg = Factory().dup(copy.arg);
+        }
+        _byteCode.push_back(copy);
+    }
     return *this;
 }
 
@@ -50,10 +56,12 @@ void Runtime::execute(std::ostream &os) {
         try {
             switch (inst.type) {
                 case (u_push) :
-                    push(Factory().createOperand(inst.arg->getType(), inst.arg->toString()));
+                    push(inst.arg);
+                    inst.arg = nullptr;
                     break;
                 case (u_assert) :
-                    assert(Factory().createOperand(inst.arg->getType(), inst.arg->toString()));
+                    assert(inst.arg);
+                    inst.arg = nullptr;
                     break;
                 case (n_pop) :
                     pop();
