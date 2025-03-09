@@ -1,6 +1,7 @@
 #include <sstream>
 
 #include "Runtime.hpp"
+#include "Factory.hpp"
 
 // Default constructor
 Runtime::Runtime() {}
@@ -11,11 +12,16 @@ Runtime::Runtime(const Runtime &other) : Stack(other) {
 }
 
 // Destructor
-Runtime::~Runtime() {}
+Runtime::~Runtime() {
+    auto remove = [](Instruction i) {
+        if (i.arg)
+            delete i.arg;
+    };
+    std::for_each(_byteCode.begin(), _byteCode.end(), remove);
+}
 
 // Copy assignment operator
-Runtime &Runtime::operator=(const Runtime &other)
-{
+Runtime &Runtime::operator=(const Runtime &other) {
     _byteCode = other._byteCode;
     return *this;
 }
@@ -44,10 +50,10 @@ void Runtime::execute(std::ostream &os) {
         try {
             switch (inst.type) {
                 case (u_push) :
-                    push(inst.arg);
+                    push(Factory().createOperand(inst.arg->getType(), inst.arg->toString()));
                     break;
                 case (u_assert) :
-                    assert(inst.arg);
+                    assert(Factory().createOperand(inst.arg->getType(), inst.arg->toString()));
                     break;
                 case (n_pop) :
                     pop();
@@ -80,6 +86,8 @@ void Runtime::execute(std::ostream &os) {
         } catch (std::exception & e) {
             throw std::runtime_error(genErr(inst, e.what()));
         }
+        if (inst.arg)
+            delete inst.arg;
         _byteCode.erase(_byteCode.begin());
     }
 

@@ -29,6 +29,8 @@ One idea I have is to basically keep the lexer so it just removes any error toke
 
 ok new idea. I make a thing to export the "AST" in quotes because it's a straight line. Stored in a vector. But if I can print the ast then I can very simply export it to a file for correcting the syntax. And it also means i can do actual parsing because that's what will produce the AST. Downside is I'm both rewriting the AST and making the AST at once. But this could be ok? hmmm how do i handel comments in the AST? don't want to be dragging them around for the execution structure
 
+> :warning: Don't try using `unique_ptr` it's very broken. Can't have it in containers becasuse you can't "copy" it, it's dificult to get working and I've spend enough time already.
+
 
 # Parsing
 

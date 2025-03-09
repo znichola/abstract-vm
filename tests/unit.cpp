@@ -180,6 +180,7 @@ void test_parser() {
     cout << "\nTesting the Parser" << endl;
 
     compare_parser("[push(42)]", "push int8(42)");
+    compare_parser("[push(42)]", "push int8(42)");
     compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
     compare_parser("[]", "");
     compare_parser("Line 0 | Is not a value \"int7\"", "push int7(123)");

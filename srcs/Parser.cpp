@@ -28,8 +28,6 @@ Runtime Parser::parse(std::vector<Token> tokens) {
             throw std::runtime_error(tok_it->genErr(se + ", with"));
         throw;
     }
-
-    (void)rt;
     return rt;
 }
 
@@ -69,8 +67,6 @@ std::pair<Parser::TokIt, Parser::OptInst> Parser::
                     }
                 );
     }
-    //std::cout << *tok_it << std::endl;
-    //throw std::runtime_error(tok_it->genErr("Unknown instruction"));
     return {tok_it, std::nullopt};
 }
 
