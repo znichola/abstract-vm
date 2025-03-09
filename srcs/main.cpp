@@ -32,9 +32,7 @@ int main(int ac, char **av) {
     std::string input = ac < 2 ? getStdInput() : getFileInput(av[1]);
 
     auto tokens = Lexer::tokenize(input);
-    auto s      = Lexer::syntaxValidate(tokens);
-    auto syntaxErrors  = s.second;
-    auto cleanedTokens = s.first;
+    auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(tokens);
 
     if (syntaxErrors.size() != 0) {
         std::cout << "Syntax Error/s :" << std::endl;
@@ -51,15 +49,15 @@ int main(int ac, char **av) {
         runtime = Parser::parse(cleanedTokens);
     } catch (std::exception &e) {
         std::cerr << "Parsing Error : " << e.what() << std::endl;
+        return 1;
     }
 
     try {
         runtime.execute(std::cout);
     } catch (std::exception &e) {
         std::cerr << "Runtime Error : " << e.what() << std::endl;
+        return 1;
     }
-
-
 
     return 0;
 }
