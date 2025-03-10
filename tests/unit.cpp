@@ -27,7 +27,7 @@ int main(void) {
 
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num - total_failed << "/" << total_num
-         << endl;
+         << endl << endl;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,6 +113,18 @@ void test_runtime() {
             ,"push double(1.0)\npush double(800000000.0)\nadd\ndump\nexit");
     compare_runtime("123456789.099999994\n"
             ,"push double(0.0)\npush double(123456789.123456789)\nadd\ndump\nexit");
+    compare_runtime(""
+            ,"push float(1.00)\nassert float(1.0000)\nexit");
+    compare_runtime(""
+            ,"push float(1.0)\nassert float(001.0)\nexit");
+    compare_runtime(""
+            ,"push float(0001.0)\nassert float(1.0)\nexit");
+    compare_runtime(""
+            ,"push int8(00012)\nassert int8(12)\nexit");
+    compare_runtime(""
+            ,"push int16(12)\nassert int16(000012)\nexit");
+    compare_runtime("120000000\n"
+            ,"push int32(120000000)\ndump\nexit");
 
     cout << "Promoting precision\n";
     compare_runtime("3.200000048\n"

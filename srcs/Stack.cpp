@@ -68,8 +68,10 @@ void Stack::assert(Opr o) const {
         ss << toTypeString(_stack.back())
            << " != "
            << toTypeString(o);
+        delete o;
         throw std::runtime_error("Assert failed " + ss.str());
     }
+    delete o;
 }
 
 std::string Stack::print(void) const {

@@ -73,7 +73,9 @@ public:
                     throw std::runtime_error(sserr.str());
                 }
             }
-            _value = ss.str();
+            std::stringstream ss2;
+            ss2 << tmp;
+            _value = ss2.str();
         }
     }
 

@@ -56,15 +56,15 @@ void Runtime::execute(std::ostream &os) {
         try {
             switch (inst.type) {
                 case (u_push) :
-                    push(inst.arg);
-                    inst.arg = nullptr;
+                    push(Factory().dup(inst.arg));
+                    //inst.arg = nullptr;
                     break;
                 case (u_assert) :
-                    assert(inst.arg);
-                    inst.arg = nullptr;
+                    assert(Factory().dup(inst.arg));
+                    //inst.arg = nullptr;
                     break;
                 case (n_pop) :
-                    pop();
+                    delete pop();
                     break;
                 case (n_dump) :
                     os << dump();
@@ -94,7 +94,7 @@ void Runtime::execute(std::ostream &os) {
         } catch (std::exception & e) {
             throw std::runtime_error(genErr(inst, e.what()));
         }
-        if (inst.arg)
+        if (inst.arg != nullptr)
             delete inst.arg;
         _byteCode.erase(_byteCode.begin());
     }
