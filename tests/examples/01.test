@@ -1,0 +1,10 @@
+push int8(12)
+push int16(30)
+add
+push float(0.5)
+mul
+dump
+; check it's the correct answer
+assert float(21.0)
+exit
+

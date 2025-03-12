@@ -35,13 +35,13 @@ int main(int ac, char **av) {
     auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(tokens);
 
     if (syntaxErrors.size() != 0) {
-        std::cout << "Syntax Error/s :" << std::endl;
+        std::cerr << "Syntax Error/s :" << std::endl;
         auto print = [](const SyntaxError s) {
-            std::cout << s << std::endl;
+            std::cerr << s << std::endl;
         };
         std::for_each(syntaxErrors.begin(), syntaxErrors.end(), print);
 
-        std::cout << "..attempting to fix before continuing" << std::endl;
+        std::cerr << "..attempting to fix before continuing" << std::endl;
     }
 
     Runtime runtime;

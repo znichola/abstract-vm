@@ -1,0 +1,4 @@
+push int(8)
+dump
+assert int8(8)
+exit
