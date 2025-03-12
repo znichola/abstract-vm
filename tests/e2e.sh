@@ -18,8 +18,9 @@ run_test () {
         exit $?
     fi
 
+    cat progout_log >> progerr_log
 
-    OUTPUT=$(diff progout_log "examples/$N.answer")
+    OUTPUT=$(diff progerr_log "examples/$N.answer")
 
     if [[ !($? -eq 0) ]]; then
         echo FAILED TO RUN DIFF 
@@ -47,3 +48,5 @@ run_test () {
 run_test 00
 run_test 01
 run_test 02
+
+rm progerr_log progout_log valgrind_log

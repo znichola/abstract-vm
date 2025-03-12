@@ -22,8 +22,6 @@ MAIN_OBJ	= objs/main.o
 
 TEST_UNIT_SRC = tests/unit.cpp
 TEST_UNIT_OBJ = tests/unit.o
-TEST_E2E_SRC  = tests/e2e.cpp
-TEST_E2E_OBJ  = tests/e2e.o
 
 OBJS_PATH = objs/
 SRCS_PATH = srcs/
@@ -42,7 +40,7 @@ $(NAME)	: $(OBJS) $(MAIN_OBJ)
 	$(CC) $(CFLAGS) $(OBJS) $(MAIN_OBJ) -o $@
 
 clean	:
-	-rm $(OBJS) $(MAIN_OBJ) $(TEST_UNIT_OBJ) $(TEST_E2E_OBJ)
+	-rm $(OBJS) $(MAIN_OBJ) $(TEST_UNIT_OBJ)
 
 fclean	: clean
 	-rm $(NAME) $(TEST_MAIN_OBJ) tests/unit tests/e2e
@@ -68,23 +66,15 @@ u	: tests/unit
 
 ru	: fclean u
 
-$(TEST_E2E_OBJ) : $(TEST_E2E_SRC)
-	$(CC) $(CFLAGS) $(INCS_PATH) -c -o $@ $<
+e	: $(NAME)
+	cd tests && ./e2e.sh
 
-tests/e2e: $(OBJS) $(TEST_E2E_OBJ)
-	$(CC) $(CFLAGS) $(INCS_PATH) $(OBJS) $(TEST_E2E_OBJ) -o $@
-
-e	: tests/e2e
-	./$<
-
-r2	: fclean e
-
-test	: tests/unit $(NAME) tests/e2e
+test	: $(NAME) tests/unit 
 	$(LEAKS_CHECK) --leak-check=full ./tests/unit
-	$(LEAKS_CHECK) ./tests/e2e
+	cd tests && ./e2e.sh
 
 leaks : re
 	$(LEAKS_CHECK) ./$(NAME)
 
-.PHONY: clean fclean re run t rt u ru e r2 leaks
+.PHONY: clean fclean re run t rt u ru e test leaks
 
