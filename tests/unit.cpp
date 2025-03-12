@@ -25,6 +25,7 @@ int main(void) {
     test_parser();
     test_runtime();
 
+
     cout << endl << (total_failed == 0 ? "PASSED" : "FAILED")
          << " : " << total_num - total_failed << "/" << total_num
          << endl << endl;
@@ -214,16 +215,16 @@ void compare_syntaxchecker(const std::string &expectedErrors,
         const std::string &expectedTokens, const std::string &input) {
 
     auto tokens = Lexer::tokenize(input);
-    auto ret    = Lexer::syntaxValidate(tokens);
-    auto syntaxErrors  = ret.second;
-    auto cleanedTokens = ret.first;
+    auto [spTok, spErr] = Lexer::fixSpellings(tokens);
+    auto [clTok, sxErr] = Lexer::syntaxValidate(spTok);
 
     std::ostringstream oss;
-    oss << syntaxErrors;
+    oss << spErr;
+    oss << sxErr;
     auto actualErrors = oss.str();
 
     std::ostringstream osss;
-    osss << cleanedTokens;
+    osss << clTok;
     auto actualTokens = osss.str();
 
     if (expect(actualErrors == expectedErrors)) {
@@ -242,33 +243,33 @@ void compare_syntaxchecker(const std::string &expectedErrors,
 void test_lexer_syntax() {
     cout << "\nTesting the Syntax checker" << endl;
 
-    compare_syntaxchecker("[]","[push, int8, N(12)]", "push int8(12)");
-    compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"]"
+    compare_syntaxchecker("[][]","[push, int8, N(12)]", "push int8(12)");
+    compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"][]"
             ,"[pop, sep, com(; \"bzz\"), sep, div, com(; \" \"), sep, com(; \"foo\")]"
             ,"pop\nbzz\ndiv \nfoo");
-    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"div\"]"
+    compare_syntaxchecker("[Line 0 | Unexpected token \" \"][Line 0 | Only one operation per line, move \"div\"]"
             ,"[add, com(; \" \"), sep, div]"
             ,"add div");
-    compare_syntaxchecker("[Line 0 | Unexpected token \" \", Line 0 | Only one operation per line, move \"assert\"]"
+    compare_syntaxchecker("[Line 0 | Unexpected token \" \"][Line 0 | Only one operation per line, move \"assert\"]"
             ,"[push, int8, N(2), com(; \" \"), sep, assert, int8, N(0)]"
             ,"push int8(2) assert int8(0)");
-    compare_syntaxchecker("[Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]"
+    compare_syntaxchecker("[][Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]"
             ,"[com(; push), sep, pop]"
             ,"push pop");
 //    compare_syntaxchecker("[Line 0 | Some sort of error]"
 //            ,"[com(; \"int8(16)\")]"
 //            ,"int8(16)"); // Maybe moved to parsing errors?
 
-    compare_syntaxchecker("[Line 0 | Unexpected token \"  \"]"
+    compare_syntaxchecker("[Line 0 | Unexpected token \"  \"][]"
             ,"[com(; \"  \")]"
             ,"  ");
-    compare_syntaxchecker("[Line 0 | Did you mean \"push \"? <- <push>]"
-            ,"[push]"
+    compare_syntaxchecker("[Line 0 | Did you mean \"push \"? <- \"push\"][Line 0 | Incomplete value with \"push\"]"
+            ,"[]"
             ,"push");
-    compare_syntaxchecker("[Line 0 | Did you mean \"int8\"? <- <int>]"
-            ,"[int8]"
+    compare_syntaxchecker("[Line 0 | Did you mean \"int8\"? <- \"int\"][Line 0 | Lone value error \"int8\"]"
+            ,"[com(; \"int8\")]"
             ,"int");
-    compare_syntaxchecker("[Line 0 | Did you mean \"mul\"? <- <mu>]"
+    compare_syntaxchecker("[Line 0 | Did you mean \"mul\"? <- \"mu\"][]"
             ,"[mul]"
             ,"mu");
 

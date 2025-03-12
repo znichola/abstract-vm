@@ -32,7 +32,18 @@ int main(int ac, char **av) {
     std::string input = ac < 2 ? getStdInput() : getFileInput(av[1]);
 
     auto tokens = Lexer::tokenize(input);
-    auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(tokens);
+    auto [correctedToken, spellingErrors] = Lexer::fixSpellings(tokens);
+    auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(correctedToken);
+
+    if (spellingErrors.size() != 0) {
+        std::cerr << "Spelling Error/s :" << std::endl;
+        auto print = [](const SyntaxError s) {
+            std::cerr << s << std::endl;
+        };
+        std::for_each(spellingErrors.begin(), spellingErrors.end(), print);
+
+        std::cerr << "..attempting to fix before continuing" << std::endl;
+    }
 
     if (syntaxErrors.size() != 0) {
         std::cerr << "Syntax Error/s :" << std::endl;

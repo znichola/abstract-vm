@@ -72,6 +72,42 @@ std::vector<Token> Lexer::tokenize(const std::string &input) {
     return tokens;
 }
 
+std::pair<std::vector<Token>, std::vector<SyntaxError>>
+
+    Lexer::fixSpellings(const std::vector<Token> & tokens) {
+
+    std::vector<SyntaxError> retErr;
+    std::vector<Token>       retTok;
+    std::vector<Token>       comments;
+
+    for (auto it = tokens.begin(); it != tokens.end(); it++) {
+
+        auto token = *it;
+        if (token.type == t_sep) {
+            retTok.insert(retTok.end(), comments.begin(), comments.end());
+            comments.erase(comments.begin(), comments.end());
+            retTok.push_back({t_sep, token.line_number});
+
+        } else if (token.type == t_com) {
+            comments.push_back(token);
+
+        } else if (token.type == t_err) {
+            auto [tok, com, err] = checkSpelling(token);
+            retTok  .insert(retTok  .end(), tok.begin(), tok.end());
+            retErr  .insert(retErr  .end(), err.begin(), err.end());
+            comments.insert(comments.end(), com.begin(), com.end());
+        } else {
+            retTok.push_back(token);
+        }
+        retTok.insert(retTok.end(), comments.begin(), comments.end());
+        comments.erase(comments.begin(), comments.end());
+
+    }
+    retTok.insert(retTok.end(), comments.begin(), comments.end());
+
+    return {retTok, retErr};
+}
+
 // Lex the input, checks for err tokens and some syntax errors by inspecting the tokens
 std::pair<std::vector<Token>, std::vector<SyntaxError>>
 
@@ -101,10 +137,10 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
             comments.push_back(token);
 
         } else if (token.type == t_err) {
-            auto [tok, com, err] = checkSpelling(token);
-            retTok  .insert(retTok  .end(), tok.begin(), tok.end());
-            retErr  .insert(retErr  .end(), err.begin(), err.end());
-            comments.insert(comments.end(), com.begin(), com.end());
+            retErr.push_back({
+                line_number,
+                "Unexpected token \"" + token.data.value() + "\""
+                });
 
         } else if (token.isNullaryOp()) {
             if (can_have_op) can_have_op = false;
@@ -227,7 +263,7 @@ std::tuple<std::vector<Token>, std::vector<Token>, std::vector<SyntaxError>>
     bool found = false;
 
     for (auto &elem : tok) {
-        // Implement levenshtien distance for much better matching!
+        // Should implement levenshtien distance for much better matching!
         bool isMatch = word.find(elem.second) != std::string::npos;
         isMatch |=  word.find(elem.second.substr(1, elem.second.size()))
                                                         != std::string::npos;
@@ -237,7 +273,7 @@ std::tuple<std::vector<Token>, std::vector<Token>, std::vector<SyntaxError>>
             retTok.push_back({elem.first, line_number});
             retErr.push_back({
                     line_number,
-                    "Did you mean \"" + elem.second + "\"? <- <" + word + ">"
+                    "Did you mean \"" + elem.second + "\"? <- \"" + word + "\""
                     });
             found = true;
             break;
