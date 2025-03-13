@@ -28,10 +28,11 @@ std::string getFileInput(char *fileName) {
     return ss.str();
 }
 
-std::tuple<bool, bool, char *> parseInput(int ac, char **av) {
-    bool isFix  = false;
-    bool isHelp = false;
-    char * file = nullptr;
+std::tuple<bool, bool, bool, char *> parseInput(int ac, char **av) {
+    bool isFix    = false;
+    bool isHelp   = false;
+    bool isStrict = false;
+    char * file   = nullptr;
 
     for (int i = 1; i < ac; i++) {
         std::string s(av[i]);
@@ -39,21 +40,24 @@ std::tuple<bool, bool, char *> parseInput(int ac, char **av) {
             isHelp = true;
         else if (s == "--fix" || s == "-f")
             isFix = true;
+        else if (s == "--strict" || s == "-s")
+            isStrict = true;
         else
             file = av[i];
     }
-    return {isFix, isHelp, file};
+    return {isFix, isHelp, isStrict, file};
 }
 
 int main(int ac, char **av) {
 
-    auto [isFix, isHelp, file] = parseInput(ac, av);
+    auto [isFix, isHelp, isStrict, file] = parseInput(ac, av);
 
     if (isHelp) {
         std::cout << "abstract virtual machine\nrun with " << av[0]
-            << "\n   -h / --help to see this message"
-            << "\n   -f / --fix  to output the spelling and syntax fixer result"
-            << std::endl;
+        << "\n   -h / --help   to see this message"
+        << "\n   -f / --fix    to output the spelling and syntax fixer result"
+        << "\n   -s / --strict does not tolerate any syntax or spelling errors"
+        << std::endl;
         return 0;
     }
 
@@ -92,6 +96,7 @@ int main(int ac, char **av) {
         };
         std::for_each(spellingErrors.begin(), spellingErrors.end(), print);
 
+        if (isStrict) return 1;
         std::cerr << "..attempting to fix before continuing" << std::endl;
     }
 
@@ -102,6 +107,7 @@ int main(int ac, char **av) {
         };
         std::for_each(syntaxErrors.begin(), syntaxErrors.end(), print);
 
+        if (isStrict) return 1;
         std::cerr << "..attempting to fix before continuing" << std::endl;
     }
 
