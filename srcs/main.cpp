@@ -21,19 +21,69 @@ std::string getStdInput() {
 
 std::string getFileInput(char *fileName) {
     std::ifstream file(fileName);
-    if (!file) throw std::runtime_error("Error opening file");
+    if (!file) throw std::runtime_error("Cannot open file \"" 
+            + std::string(fileName) + "\"");
     std::ostringstream ss;
     ss << file.rdbuf();
     return ss.str();
 }
 
+std::tuple<bool, bool, char *> parseInput(int ac, char **av) {
+    bool isFix  = false;
+    bool isHelp = false;
+    char * file = nullptr;
+
+    for (int i = 1; i < ac; i++) {
+        std::string s(av[i]);
+        if (s == "--help" || s == "-h")
+            isHelp = true;
+        else if (s == "--fix" || s == "-f")
+            isFix = true;
+        else
+            file = av[i];
+    }
+    return {isFix, isHelp, file};
+}
 
 int main(int ac, char **av) {
-    std::string input = ac < 2 ? getStdInput() : getFileInput(av[1]);
+
+    auto [isFix, isHelp, file] = parseInput(ac, av);
+
+    if (isHelp) {
+        std::cout << "abstract virtual machine\nrun with " << av[0]
+            << "\n   -h / --help to see this message"
+            << "\n   -f / --fix  to output the spelling and syntax fixer result"
+            << std::endl;
+        return 0;
+    }
+
+    std::string input;
+
+    try {
+        input = file == nullptr ? getStdInput() : getFileInput(file);
+    } catch (std::exception &e) {
+        std::cerr << "Startup error | " << e.what() << std::endl;
+        return 1;
+    }
 
     auto tokens = Lexer::tokenize(input);
     auto [correctedToken, spellingErrors] = Lexer::fixSpellings(tokens);
     auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(correctedToken);
+
+    if (isFix) {
+        auto print = [](const Token &t) {
+            if (t.type == t_sep)
+                std::cout << std::endl;
+            else if (t.type == t_push || t.type == t_assert)
+                std::cout << t << " ";
+            else if (t.type == t_n || t.type == t_z)
+                std::cout << "(" << t.data.value() << ")";
+            else
+                std::cout << t;
+        };
+        std::for_each(cleanedTokens.begin(), cleanedTokens.end(), print);
+        return 0;
+    }
 
     if (spellingErrors.size() != 0) {
         std::cerr << "Spelling Error/s :" << std::endl;
