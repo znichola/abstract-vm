@@ -1,0 +1,12 @@
+push int8(3)
+push floatt(2.1)
+push ouble(3.2)
+ssert double(3.2)
+push int15(33)
+po
+; some comment
+mul
+div
+dump
+exit
+

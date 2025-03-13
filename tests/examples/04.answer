@@ -1,0 +1,8 @@
+Spelling Error/s :
+Line 8 | Unexpected token " "
+..attempting to fix before continuing
+Syntax Error/s :
+Line 8 | Only one operation per line, move "sub"
+..attempting to fix before continuing
+28
+Runtime Error : Exit must be called before program end

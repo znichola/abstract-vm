@@ -1,0 +1,8 @@
+Spelling Error/s :
+Line 1 | Did you mean "float"? <- "floatt"
+Line 2 | Did you mean "double"? <- "ouble"
+Line 3 | Did you mean "assert "? <- "ssert "
+Line 4 | Did you mean "int8"? <- "int15"
+Line 5 | Did you mean "pop"? <- "po"
+..attempting to fix before continuing
+0.4464285714

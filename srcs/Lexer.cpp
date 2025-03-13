@@ -45,7 +45,7 @@ std::vector<Token> Lexer::tokenize(const std::string &input) {
 
     std::vector<Token> tokens;
 
-    unsigned int line_number = 0;
+    unsigned int line_number = 1;
 
     std::string match_on = input;
     while (match_on.length() != 0) {
@@ -113,7 +113,7 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
 
     Lexer::syntaxValidate(const std::vector<Token> & tokens) {
 
-    unsigned int line_number = 0;
+    unsigned int line_number = 1;
 
     std::vector<SyntaxError> retErr;
     std::vector<Token>       retTok;

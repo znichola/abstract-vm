@@ -1,0 +1,15 @@
+push int8(90)
+
+push int16(30)
+
+push int32(32)
+
+
+
+add sub
+
+dump
+
+pop
+
+

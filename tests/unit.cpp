@@ -71,24 +71,24 @@ void test_runtime() {
             ,"\n;------------\n; exemple.avm\n;------------\n\npush int32(42)\npush int32(33)\n\nadd\n\npush float(44.55)\n\nmul\n\npush double(42.42)\npush int32(42)\n\ndump\n\npop\n\nassert double(42.42)\n\nexit\n\n");
     compare_runtime("5\n"
             ,"push int32(2)\npush int32(3)\nadd\nassert int32(5)\ndump\nexit\n");
-    compare_runtime("Line 0 | Can't pop empty stack"
+    compare_runtime("Line 1 | Can't pop empty stack"
             ,"pop\n");
 
     compare_runtime("42\n"
             ,"push int8(12)\npush int8(30)\nadd\ndump\nexit");
     compare_runtime("Exit must be called before program end"
             ,"push int8(42)");
-    compare_runtime("Line 2 | Cannot have instructions after exit"
+    compare_runtime("Line 3 | Cannot have instructions after exit"
             ,"push int8(42)\nexit\ndump\ndump");
-    compare_runtime("Line 2 | Div by zero"
+    compare_runtime("Line 3 | Div by zero"
             ,"push int8(1)\npush int8(0)\ndiv\nexit");
-    compare_runtime("Line 2 | Mod by zero"
+    compare_runtime("Line 3 | Mod by zero"
             ,"push int8(1)\npush int8(0)\nmod\nexit");
 
     cout << "Assertions & value types\n";
-    compare_runtime("Line 1 | Assert failed int8(0) != int8(1)"
+    compare_runtime("Line 2 | Assert failed int8(0) != int8(1)"
             ,"push int8(0)\nassert int8(1)\nexit");
-    compare_runtime("Line 1 | Assert failed float(0.0) != int8(0)"
+    compare_runtime("Line 2 | Assert failed float(0.0) != int8(0)"
             ,"push float(0.0)\nassert int8(0)\nexit");
     compare_runtime("8\n"
             ,"push int8(4)\npush int16(4)\nadd\nassert int16(8)\ndump\nexit\n");
@@ -140,19 +140,19 @@ void test_runtime() {
             ,"push double(1.0)\npush float(2.0)\nmul\ndump\nassert double(2.0)\nexit");
 
     cout << "Types and casting\n";
-    compare_runtime("Line 0 | Overflow value 127, with \"push\""
+    compare_runtime("Line 1 | Overflow value 127, with \"push\""
             ,"push int8(256)\nexit");
-    compare_runtime("Line 0 | Underflow value -128, with \"push\""
+    compare_runtime("Line 1 | Underflow value -128, with \"push\""
             ,"push int8(-256)\nexit");
 
-    compare_runtime("Line 1 | Overflow value 32767, with \"assert\""
+    compare_runtime("Line 2 | Overflow value 32767, with \"assert\""
             ,"spush int16(2)\nassert int16(2500006)\nexit");
-    compare_runtime("Line 1 | Underflow value -32768, with \"assert\""
+    compare_runtime("Line 2 | Underflow value -32768, with \"assert\""
             ,"push int16(2)\nassert int16(-2500006)\nexit");
 
-    compare_runtime("Line 1 | Overflow value 2147483647, with \"assert\""
+    compare_runtime("Line 2 | Overflow value 2147483647, with \"assert\""
             ,"spush int32(2)\nassert int32(2500000000006)\nexit");
-    compare_runtime("Line 1 | Underflow value -2147483648, with \"assert\""
+    compare_runtime("Line 2 | Underflow value -2147483648, with \"assert\""
             ,"push int32(2)\nassert int32(-2500000000006)\nexit");
 
     cout << "Runtime tests complete."
@@ -196,12 +196,12 @@ void test_parser() {
     compare_parser("[push(42)]", "push int8(42)");
     compare_parser("[push(12), push(12), add]", "push int8(12)\npush int8(12)\nadd");
     compare_parser("[]", "");
-    compare_parser("Line 0 | Is not a value \"int7\"", "push int7(123)");
-    compare_parser("Line 1 | Value types don't match \"float\" with \"N(2)\"", "push int8(123)\npush float(2)");
-    compare_parser("Line 0 | Not enough to construct value for \"push\"", "push ");
-    compare_parser("Line 0 | Value types don't match \"int8\" with \"Z(123.3)\"", "push int8(123.3)");
-    compare_parser("Line 0 | Value types don't match \"float\" with \"N(123)\"", "assert float(123)");
-    compare_parser("Line 4 | Not enough to construct value for \"push\"", "\n\n\n\npush 3");
+    compare_parser("Line 1 | Is not a value \"int7\"", "push int7(123)");
+    compare_parser("Line 2 | Value types don't match \"float\" with \"N(2)\"", "push int8(123)\npush float(2)");
+    compare_parser("Line 1 | Not enough to construct value for \"push\"", "push ");
+    compare_parser("Line 1 | Value types don't match \"int8\" with \"Z(123.3)\"", "push int8(123.3)");
+    compare_parser("Line 1 | Value types don't match \"float\" with \"N(123)\"", "assert float(123)");
+    compare_parser("Line 5 | Not enough to construct value for \"push\"", "\n\n\n\npush 3");
     //compare_parser("TODO", "don't remember what the case I wanted to add here");
 
     cout << "Parser tests complete. "
@@ -244,32 +244,32 @@ void test_lexer_syntax() {
     cout << "\nTesting the Syntax checker" << endl;
 
     compare_syntaxchecker("[][]","[push, int8, N(12)]", "push int8(12)");
-    compare_syntaxchecker("[Line 1 | Unexpected token \"bzz\", Line 2 | Unexpected token \" \", Line 3 | Unexpected token \"foo\"][]"
+    compare_syntaxchecker("[Line 2 | Unexpected token \"bzz\", Line 3 | Unexpected token \" \", Line 4 | Unexpected token \"foo\"][]"
             ,"[pop, sep, com(; \"bzz\"), sep, div, com(; \" \"), sep, com(; \"foo\")]"
             ,"pop\nbzz\ndiv \nfoo");
-    compare_syntaxchecker("[Line 0 | Unexpected token \" \"][Line 0 | Only one operation per line, move \"div\"]"
+    compare_syntaxchecker("[Line 1 | Unexpected token \" \"][Line 1 | Only one operation per line, move \"div\"]"
             ,"[add, com(; \" \"), sep, div]"
             ,"add div");
-    compare_syntaxchecker("[Line 0 | Unexpected token \" \"][Line 0 | Only one operation per line, move \"assert\"]"
+    compare_syntaxchecker("[Line 1 | Unexpected token \" \"][Line 1 | Only one operation per line, move \"assert\"]"
             ,"[push, int8, N(2), com(; \" \"), sep, assert, int8, N(0)]"
             ,"push int8(2) assert int8(0)");
-    compare_syntaxchecker("[][Line 0 | Incomplete value with \"push\", Line 0 | Only one operation per line, move \"pop\"]"
+    compare_syntaxchecker("[][Line 1 | Incomplete value with \"push\", Line 1 | Only one operation per line, move \"pop\"]"
             ,"[com(; push), sep, pop]"
             ,"push pop");
 //    compare_syntaxchecker("[Line 0 | Some sort of error]"
 //            ,"[com(; \"int8(16)\")]"
 //            ,"int8(16)"); // Maybe moved to parsing errors?
 
-    compare_syntaxchecker("[Line 0 | Unexpected token \"  \"][]"
+    compare_syntaxchecker("[Line 1 | Unexpected token \"  \"][]"
             ,"[com(; \"  \")]"
             ,"  ");
-    compare_syntaxchecker("[Line 0 | Did you mean \"push \"? <- \"push\"][Line 0 | Incomplete value with \"push\"]"
+    compare_syntaxchecker("[Line 1 | Did you mean \"push \"? <- \"push\"][Line 1 | Incomplete value with \"push\"]"
             ,"[]"
             ,"push");
-    compare_syntaxchecker("[Line 0 | Did you mean \"int8\"? <- \"int\"][Line 0 | Lone value error \"int8\"]"
+    compare_syntaxchecker("[Line 1 | Did you mean \"int8\"? <- \"int\"][Line 1 | Lone value error \"int8\"]"
             ,"[com(; \"int8\")]"
             ,"int");
-    compare_syntaxchecker("[Line 0 | Did you mean \"mul\"? <- \"mu\"][]"
+    compare_syntaxchecker("[Line 1 | Did you mean \"mul\"? <- \"mu\"][]"
             ,"[mul]"
             ,"mu");
 

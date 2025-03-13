@@ -48,5 +48,6 @@ run_test () {
 run_test 00
 run_test 01
 run_test 02
+run_test 03
 
 rm progerr_log progout_log valgrind_log
