@@ -1,0 +1,46 @@
+; HELLO
+push int8(72)
+print
+push int8(69)
+print
+push int8(76)
+print
+push int8(76)
+print
+push int8(79)
+print
+
+; print raw numbers
+dump
+
+; write hello in reverse in smaller letters
+push int8(32);
+add
+print
+pop
+
+push int8(32);
+add
+print
+pop
+
+push int8(32);
+add
+print
+pop
+
+push int8(32);
+add
+print
+pop
+
+push int8(32);
+add
+print
+pop
+
+
+dump
+
+exit
+

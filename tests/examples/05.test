@@ -1,4 +1,4 @@
-push   int32(43)
+push int32(43)
 
 sub
 

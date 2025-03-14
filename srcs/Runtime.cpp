@@ -85,7 +85,7 @@ void Runtime::execute(std::ostream &os) {
                     mod();
                     break;
                 case (n_print) :
-                    print();
+                    os << print();
                     break;
                 case (n_exit) :
                     exit();

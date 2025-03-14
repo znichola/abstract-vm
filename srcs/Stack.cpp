@@ -79,10 +79,12 @@ std::string Stack::print(void) const {
     Opr o = _stack.back();
     if (o->getType() != eOperandType::e_int8)
         throw std::runtime_error("Not a Char");
-    char c = '#';
+    int c = 0;
     std::stringstream ss(o->toString());
     ss >> c;
-    return std::string(1, c) + "\n";
+    std::stringstream ss2;
+    ss2 << static_cast<char>(c);
+    return ss2.str() + "\n";
 }
 
 void Stack::apply(std::function<Opr(Opr, Opr)> fn) {
