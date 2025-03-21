@@ -11,6 +11,8 @@ run_test () {
 #        exit $?
 #    fi
 
+    echo -n "$N "
+
     LEAK=$(grep "no leaks are possible" valgrind_log)
 
     if [[ !($? -eq 0) ]]; then
@@ -28,7 +30,6 @@ run_test () {
         exit $?
     fi
 
-    echo -n "$N "
     if [[ -z "$LEAK" ]]; then
        echo LEAK KO 
        echo $LEAK
@@ -49,5 +50,9 @@ run_test 00
 run_test 01
 run_test 02
 run_test 03
+run_test 04
+run_test 05
+run_test 06
+run_test 07
 
 rm progerr_log progout_log valgrind_log
