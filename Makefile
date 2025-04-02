@@ -50,11 +50,6 @@ re	: fclean all
 run : all
 	./$(NAME)
 
-t	: all
-	./$(NAME) tests/example.txt
-
-rt	: fclean t
-
 $(TEST_UNIT_OBJ) : $(TEST_UNIT_SRC)
 	$(CC) $(CFLAGS) $(INCS_PATH) -c -o $@ $<
 
@@ -76,5 +71,5 @@ test	: $(NAME) tests/unit
 leaks : re
 	$(LEAKS_CHECK) ./$(NAME)
 
-.PHONY: clean fclean re run t rt u ru e test leaks
+.PHONY: clean fclean re run u ru e test leaks
 
