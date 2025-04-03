@@ -83,6 +83,8 @@ int main(int ac, char **av) {
                 std::cout << t << " ";
             else if (t.type == t_n || t.type == t_z)
                 std::cout << "(" << t.data.value() << ")";
+            else if (t.type == t_com)
+                std::cout << t.data.value();
             else
                 std::cout << t;
         };
