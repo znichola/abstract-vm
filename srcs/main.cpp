@@ -72,7 +72,8 @@ int main(int ac, char **av) {
 
     auto tokens = Lexer::tokenize(input);
     auto [correctedToken, spellingErrors] = Lexer::fixSpellings(tokens);
-    auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(correctedToken);
+    auto [filteredTokens, errorTokens] = Lexer::dropErrorTokens(correctedToken);
+    auto [cleanedTokens, syntaxErrors] = Lexer::syntaxValidate(filteredTokens);
 
     if (isFix) {
         auto print = [](const Token &t) {
@@ -100,11 +101,12 @@ int main(int ac, char **av) {
         std::cerr << "..attempting to fix before continuing" << std::endl;
     }
 
-    if (syntaxErrors.size() != 0) {
+    if (syntaxErrors.size() != 0 || errorTokens.size() != 0) {
         std::cerr << "Syntax Error/s :" << std::endl;
         auto print = [](const SyntaxError s) {
             std::cerr << s << std::endl;
         };
+        std::for_each(errorTokens.begin(), errorTokens.end(), print);
         std::for_each(syntaxErrors.begin(), syntaxErrors.end(), print);
 
         if (isStrict) return 1;

@@ -18,6 +18,9 @@ public:
     static std::pair<std::vector<Token>, std::vector<SyntaxError>>
         fixSpellings(const std::vector<Token> & tokens);
 
+    static std::pair<std::vector<Token>, std::vector<SyntaxError>>
+        dropErrorTokens(const std::vector<Token> & tokens);
+
     static std::optional<SyntaxError> checkNullaryInstruction();
     static std::optional<SyntaxError> checkUnaryInstruction();
     static std::optional<SyntaxError> checkValue();
