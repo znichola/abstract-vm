@@ -96,17 +96,21 @@ public:
 
 // Methods
     eOperandType getType(void) const {
-        if (typeid(T).name() == typeid(int8_t).name())
+        if constexpr (std::is_same<T, int8_t>())
             return eOperandType::e_int8;
-        if (typeid(T).name() == typeid(int16_t).name())
+        else if constexpr (std::is_same<T, int16_t>())
             return eOperandType::e_int16;
-        if (typeid(T).name() == typeid(int32_t).name())
+        else if constexpr (std::is_same<T, int32_t>())
             return eOperandType::e_int32;
-        if (typeid(T).name() == typeid(float).name())
+        else if constexpr (std::is_same<T, float>())
             return eOperandType::e_Float;
-        if (typeid(T).name() == typeid(double).name())
+        else if constexpr (std::is_same<T, double>())
             return eOperandType::e_Double;
-        return eOperandType::e_int8;
+        else {
+            // The expression is type dependant, so the compoiler will
+            // evaluate it once it has the type!
+            static_assert(sizeof(T) != sizeof(T), "T not supported");
+        }
     }
 
     int getPrecision(void) const {
