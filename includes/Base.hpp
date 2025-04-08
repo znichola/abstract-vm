@@ -22,7 +22,7 @@ public:
     Base() : _value("") {}
 
     Base(std::string v) {
-        if (v == "") return ; //TODO test removing this to see if tests break
+        if (v == "") return ;
         std::stringstream sserr;
         std::stringstream ss(v);
         if constexpr (std::is_same<T, float>() || std::is_same<T, double>()) {

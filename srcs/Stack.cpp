@@ -140,7 +140,5 @@ void Stack::mod(void) {
     apply([](Opr a, Opr b) { return *a % *b; });
 }
 
-void Stack::exit(void) const {
-    // TODO : implement the post instruction checking
-}
+void Stack::exit(void) const {}
 

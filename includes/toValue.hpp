@@ -6,7 +6,7 @@
 template <eOperandType T>
 constexpr auto getZeroVal() {
     if constexpr (T == e_int8) {
-        return std::int16_t{0}; // TODO hadle this case specially
+        return std::int16_t{0};
     } else if constexpr (T == e_int16) {
         return std::int16_t{0};
     } else if constexpr (T == e_int32) {
@@ -23,7 +23,9 @@ auto toValue(const std::string &s) {
     std::stringstream ss(s);
     auto v = getZeroVal<T>();
     ss >> v;
-    if (ss.fail()) {} // TODO : add error handelling for parsing error
+    if (ss.fail()) {
+        throw std::runtime_error("Error parsing value string");
+    }
     return v;
 }
 

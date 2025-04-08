@@ -216,8 +216,6 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
     }
     retTok.insert(retTok.end(), comments.begin(), comments.end());
 
-    // TODO maybe I need to sort of recursive structure,
-    // so I re analyse tokens after I have made the list
     return {retTok, retErr};
 }
 
