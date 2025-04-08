@@ -22,8 +22,6 @@ public:
     static std::pair<TokIt, OptInst> parseInstruction(TokIt tok_it, TokIt it_end);
 
     static std::pair<TokIt, OptVal> parseValue(TokIt tok_it, TokIt it_end);
-
-//    std::pair<std::vector<Token>::iterator, IOperand *> parseValue(std::pair<std::vector<Token>::iterator tokens);
 };
 
 #endif /* PARSER_HPP */

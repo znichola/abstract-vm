@@ -16,6 +16,9 @@ Stack::Stack(const Stack &other) {
     *this = other;
 }
 
+// Move constuctor
+Stack::Stack(Stack &&other) noexcept : _stack(std::move(other._stack)) {}
+
 // Destructor
 Stack::~Stack() {
     auto remove = [](const IOperand *o) { delete o; };
@@ -24,8 +27,18 @@ Stack::~Stack() {
 
 // Copy assignment operator
 Stack &Stack::operator=(const Stack &other) {
-    for (const auto & o : other._stack) {
-        _stack.push_back(Factory().dup(o));
+    if (this != &other) {
+        for (const auto & o : other._stack) {
+            _stack.push_back(Factory().dup(o));
+        }
+    }
+    return *this;
+}
+
+// Move assignment operator
+Stack &Stack::operator=(Stack &&other) noexcept {
+    if (this != &other) {
+        _stack = std::move(other._stack);
     }
     return *this;
 }

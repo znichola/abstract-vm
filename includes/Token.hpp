@@ -15,6 +15,7 @@ public:
     unsigned int line_number;
     std::optional<std::string> data;
 
+    // Default constructor
     Token();
 
     Token(eTokenType type, unsigned int line_number);
@@ -22,11 +23,20 @@ public:
     Token(eTokenType type, unsigned int line_number,
             std::optional<std::string> data);
 
+    // Copy constructor
     Token(const Token &other);
 
+    // Move constructor
+    Token(Token &&other) noexcept;
+
+    // Destructor
     ~Token();
 
+    // Copy assignment operator
     Token & operator=(const Token &other);
+
+    // Move assignment operator
+    Token & operator=(Token &&other) noexcept;
 
     bool isNullaryOp(void) const;
     bool isUnaryOp(void) const;

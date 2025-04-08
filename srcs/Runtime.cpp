@@ -11,6 +11,12 @@ Runtime::Runtime(const Runtime &other) : Stack(other) {
     *this = other;
 }
 
+// Move constructor
+Runtime::Runtime(Runtime &&other) noexcept : 
+    _byteCode(std::move(other._byteCode)),
+    _logger(other._logger) {
+}
+
 // Destructor
 Runtime::~Runtime() {
     auto remove = [](Instruction i) {
@@ -22,12 +28,24 @@ Runtime::~Runtime() {
 
 // Copy assignment operator
 Runtime &Runtime::operator=(const Runtime &other) {
-    for (const auto & i : other._byteCode) {
-        auto copy = i;
-        if (copy.arg) {
-            copy.arg = Factory().dup(copy.arg);
+    if (this != &other) {
+        for (const auto & i : other._byteCode) {
+            auto copy = i;
+            if (copy.arg) {
+                copy.arg = Factory().dup(copy.arg);
+            }
+            _byteCode.push_back(copy);
         }
-        _byteCode.push_back(copy);
+    }
+    return *this;
+}
+
+// Move constructor
+Runtime &Runtime::operator=(Runtime &&other) noexcept {
+    if (this != &other) {
+        Stack::operator=(std::move(other));
+        _byteCode = std::move(other._byteCode);
+        _logger = other._logger;
     }
     return *this;
 }

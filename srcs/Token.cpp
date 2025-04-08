@@ -15,7 +15,18 @@ Token::Token(eTokenType type, unsigned int line_number) :
     type(type), line_number(line_number), data(std::nullopt) {}
 
 Token::Token(const Token &other) {
-    *this = other;
+    if (this != &other)
+        *this = other;
+}
+
+Token::Token(Token &&other) noexcept :
+    type(other.type),
+    line_number(other.line_number),
+    data(std::move(other.data)) {
+    // Invalidate the moved-from object
+    other.type = t_err;
+    other.line_number = 0;
+    other.data = std::nullopt;
 }
 
 Token::~Token() {};
@@ -24,6 +35,15 @@ Token & Token::operator=(const Token &other) {
     type = other.type;
     line_number = other.line_number;
     data = other.data;
+    return *this;
+}
+
+Token &Token::operator=(Token &&other) noexcept {
+    if (this != &other) {
+        type = std::move(other.type);
+        line_number = std::move(other.line_number);
+        data = std::move(other.data);
+    }
     return *this;
 }
 

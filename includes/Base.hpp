@@ -81,18 +81,33 @@ public:
 
 // Copy constructor
     Base(const Base &other) {
-    *this = other;
-    //_value = other._value;
-}
+        *this = other;
+    }
+
+
+// Move constructor
+    Base(const Base &&other) {
+        _value = std::move(other._value);
+    }
+
 
 // Destructor
     ~Base() {}
 
 // Copy assignment operator
     Base &operator=(const Base &other) {
-    _value = other._value;
-    return *this;
+        _value = other._value;
+        return *this;
     }
+
+// Move assignment operator
+    Base &operator=(Base &&other) noexcept {
+        if (this != &other) {
+            _value = std::move(other._value);
+        }
+        return *this;
+    }
+
 
 // Methods
     eOperandType getType(void) const {

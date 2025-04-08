@@ -14,11 +14,17 @@ public:
 // Copy constructor
 	Runtime(const Runtime &other);
 
+// Move constructor
+    Runtime(Runtime &&other) noexcept;
+
 // Destructor
 	~Runtime();
 
 // Copy assignment operator
 	Runtime & operator=(const Runtime &other);
+
+// Move assignment operator
+    Runtime &operator=(Runtime &&other) noexcept;
 
 // Methods
 

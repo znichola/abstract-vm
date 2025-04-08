@@ -23,11 +23,17 @@ public:
 // Copy constructor
     Stack(const Stack &other);
 
+// Move constructor
+    Stack(Stack &&other) noexcept;
+
 // Destructor
     ~Stack();
 
 // Copy assignment operator
     Stack & operator=(const Stack &other);
+
+// Move assignment operator
+    Stack & operator=(Stack &&other) noexcept;
 
 // Methods
 
