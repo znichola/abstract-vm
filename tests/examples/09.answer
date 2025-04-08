@@ -1,0 +1,6 @@
+Spelling Error/s :
+Line 3 | Unexpected token "ｐｕｓｈ ｉｎｔ１６（１２３）"
+Line 5 | Unexpected token "^M"
+Line 7 | Unexpected token "	"
+..attempting to fix before continuing
+Runtime Error : Exit must be called before program end

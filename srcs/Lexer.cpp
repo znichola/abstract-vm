@@ -13,6 +13,8 @@ std::optional<SyntaxError>
 std::tuple<std::vector<Token>, std::vector<Token>, std::vector<SyntaxError>>
     checkSpelling(Token token);
 
+std::string visualize_whitespace(const std::string& input);
+
 // Tokenize this input, cannont fail.
 std::vector<Token> Lexer::tokenize(const std::string &input) {
 
@@ -49,6 +51,7 @@ std::vector<Token> Lexer::tokenize(const std::string &input) {
 
     std::string match_on = input;
     while (match_on.length() != 0) {
+        bool match_found = false;
         for (const auto &[regex, type] : tokenRegex) {
             std::smatch match;
             if (std::regex_search(match_on, match, regex, std::regex_constants::match_continuous)) {
@@ -65,8 +68,22 @@ std::vector<Token> Lexer::tokenize(const std::string &input) {
                     if (type == t_sep) line_number += 1;
                 }
                 match_on = match.suffix(); // must be last! all match indexs ref to this
+                match_found = true;
                 break;
             }
+        }
+        if (match_found == false) {
+            std::string match(std::string(1, match_on[0]));
+            match = visualize_whitespace(match);
+            Token token(
+                    t_err,
+                    line_number,
+                    match
+                    // std::optional<std::string>(foo)
+                    // std::optional<std::string>(std::string(1, match_on[0]))
+                    );
+            tokens.push_back(token);
+            match_on.erase(0, 1);
         }
     }
     return tokens;
@@ -333,4 +350,34 @@ std::pair<std::vector<Token>, std::vector<SyntaxError>>
     retTok.insert(retTok.end(), comments.begin(), comments.end());
 
     return {retTok, retErr};
+}
+
+
+std::string visualize_whitespace(const std::string& input) {
+    std::string output;
+
+    for (char c : input) {
+        switch (c) {
+            case '\t':
+                output += "^I";
+                break;
+            case '\n':
+                output += "\\n\n";
+                break;
+            case '\r':
+                output += "^M";
+                break;
+            case ' ':
+                output += ".";
+                break;
+            default:
+                if (iscntrl(static_cast<unsigned char>(c))) {
+                    output += "^X";
+                } else {
+                    output += c;
+                }
+        }
+    }
+
+    return output;
 }

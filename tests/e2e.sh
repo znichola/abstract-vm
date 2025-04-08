@@ -54,5 +54,6 @@ run_test 04
 run_test 05
 run_test 06
 run_test 07
+run_test 08
 
 rm progerr_log progout_log valgrind_log
